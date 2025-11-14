@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Anime {
 
- String get id; String get canonicalTitle; String get synopsis; String? get description; String? get posterImageUrl; String? get coverImageUrl; String? get averageRating; int? get episodeCount; String? get showType; String? get status;
+ String get id; String get canonicalTitle; String get synopsis; String? get description; String? get posterImageUrl; String? get coverImageUrl; double? get averageRating; int? get episodeCount; String? get showType; String? get status;
 /// Create a copy of Anime
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $AnimeCopyWith<$Res>  {
   factory $AnimeCopyWith(Anime value, $Res Function(Anime) _then) = _$AnimeCopyWithImpl;
 @useResult
 $Res call({
- String id, String canonicalTitle, String synopsis, String? description, String? posterImageUrl, String? coverImageUrl, String? averageRating, int? episodeCount, String? showType, String? status
+ String id, String canonicalTitle, String synopsis, String? description, String? posterImageUrl, String? coverImageUrl, double? averageRating, int? episodeCount, String? showType, String? status
 });
 
 
@@ -74,7 +74,7 @@ as String,description: freezed == description ? _self.description : description 
 as String?,posterImageUrl: freezed == posterImageUrl ? _self.posterImageUrl : posterImageUrl // ignore: cast_nullable_to_non_nullable
 as String?,coverImageUrl: freezed == coverImageUrl ? _self.coverImageUrl : coverImageUrl // ignore: cast_nullable_to_non_nullable
 as String?,averageRating: freezed == averageRating ? _self.averageRating : averageRating // ignore: cast_nullable_to_non_nullable
-as String?,episodeCount: freezed == episodeCount ? _self.episodeCount : episodeCount // ignore: cast_nullable_to_non_nullable
+as double?,episodeCount: freezed == episodeCount ? _self.episodeCount : episodeCount // ignore: cast_nullable_to_non_nullable
 as int?,showType: freezed == showType ? _self.showType : showType // ignore: cast_nullable_to_non_nullable
 as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -162,7 +162,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String canonicalTitle,  String synopsis,  String? description,  String? posterImageUrl,  String? coverImageUrl,  String? averageRating,  int? episodeCount,  String? showType,  String? status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String canonicalTitle,  String synopsis,  String? description,  String? posterImageUrl,  String? coverImageUrl,  double? averageRating,  int? episodeCount,  String? showType,  String? status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Anime() when $default != null:
 return $default(_that.id,_that.canonicalTitle,_that.synopsis,_that.description,_that.posterImageUrl,_that.coverImageUrl,_that.averageRating,_that.episodeCount,_that.showType,_that.status);case _:
@@ -183,7 +183,7 @@ return $default(_that.id,_that.canonicalTitle,_that.synopsis,_that.description,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String canonicalTitle,  String synopsis,  String? description,  String? posterImageUrl,  String? coverImageUrl,  String? averageRating,  int? episodeCount,  String? showType,  String? status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String canonicalTitle,  String synopsis,  String? description,  String? posterImageUrl,  String? coverImageUrl,  double? averageRating,  int? episodeCount,  String? showType,  String? status)  $default,) {final _that = this;
 switch (_that) {
 case _Anime():
 return $default(_that.id,_that.canonicalTitle,_that.synopsis,_that.description,_that.posterImageUrl,_that.coverImageUrl,_that.averageRating,_that.episodeCount,_that.showType,_that.status);case _:
@@ -203,7 +203,7 @@ return $default(_that.id,_that.canonicalTitle,_that.synopsis,_that.description,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String canonicalTitle,  String synopsis,  String? description,  String? posterImageUrl,  String? coverImageUrl,  String? averageRating,  int? episodeCount,  String? showType,  String? status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String canonicalTitle,  String synopsis,  String? description,  String? posterImageUrl,  String? coverImageUrl,  double? averageRating,  int? episodeCount,  String? showType,  String? status)?  $default,) {final _that = this;
 switch (_that) {
 case _Anime() when $default != null:
 return $default(_that.id,_that.canonicalTitle,_that.synopsis,_that.description,_that.posterImageUrl,_that.coverImageUrl,_that.averageRating,_that.episodeCount,_that.showType,_that.status);case _:
@@ -227,7 +227,7 @@ class _Anime implements Anime {
 @override final  String? description;
 @override final  String? posterImageUrl;
 @override final  String? coverImageUrl;
-@override final  String? averageRating;
+@override final  double? averageRating;
 @override final  int? episodeCount;
 @override final  String? showType;
 @override final  String? status;
@@ -265,7 +265,7 @@ abstract mixin class _$AnimeCopyWith<$Res> implements $AnimeCopyWith<$Res> {
   factory _$AnimeCopyWith(_Anime value, $Res Function(_Anime) _then) = __$AnimeCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String canonicalTitle, String synopsis, String? description, String? posterImageUrl, String? coverImageUrl, String? averageRating, int? episodeCount, String? showType, String? status
+ String id, String canonicalTitle, String synopsis, String? description, String? posterImageUrl, String? coverImageUrl, double? averageRating, int? episodeCount, String? showType, String? status
 });
 
 
@@ -291,7 +291,7 @@ as String,description: freezed == description ? _self.description : description 
 as String?,posterImageUrl: freezed == posterImageUrl ? _self.posterImageUrl : posterImageUrl // ignore: cast_nullable_to_non_nullable
 as String?,coverImageUrl: freezed == coverImageUrl ? _self.coverImageUrl : coverImageUrl // ignore: cast_nullable_to_non_nullable
 as String?,averageRating: freezed == averageRating ? _self.averageRating : averageRating // ignore: cast_nullable_to_non_nullable
-as String?,episodeCount: freezed == episodeCount ? _self.episodeCount : episodeCount // ignore: cast_nullable_to_non_nullable
+as double?,episodeCount: freezed == episodeCount ? _self.episodeCount : episodeCount // ignore: cast_nullable_to_non_nullable
 as int?,showType: freezed == showType ? _self.showType : showType // ignore: cast_nullable_to_non_nullable
 as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String?,

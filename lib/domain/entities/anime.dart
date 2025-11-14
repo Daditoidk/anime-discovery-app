@@ -12,7 +12,7 @@ abstract class Anime with _$Anime {
     String? description,
     String? posterImageUrl,
     String? coverImageUrl,
-    String? averageRating,
+    double? averageRating,
     int? episodeCount,
     String? showType,
     String? status,

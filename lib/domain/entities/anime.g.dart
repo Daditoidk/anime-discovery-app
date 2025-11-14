@@ -13,7 +13,7 @@ _Anime _$AnimeFromJson(Map<String, dynamic> json) => _Anime(
   description: json['description'] as String?,
   posterImageUrl: json['posterImageUrl'] as String?,
   coverImageUrl: json['coverImageUrl'] as String?,
-  averageRating: json['averageRating'] as String?,
+  averageRating: (json['averageRating'] as num?)?.toDouble(),
   episodeCount: (json['episodeCount'] as num?)?.toInt(),
   showType: json['showType'] as String?,
   status: json['status'] as String?,
