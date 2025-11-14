@@ -1,3 +1,4 @@
+import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:anime_discovery_app/presentation/notifiers/popular_anime_list_notifier.dart';
 import 'package:anime_discovery_app/presentation/providers/anime_providers.dart';
@@ -13,7 +14,14 @@ class PopularAnimeListPage extends ConsumerWidget {
     final listAsync = ref.watch(popularAnimeListProvider);
     return Scaffold(
       body: SafeArea(
-        child: listAsync.when(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Text('Popular Anime List'),
+            ),
+            Flexible(
+              child: listAsync.when(
           data: (List<Anime> data) {
             return ListView.builder(
               itemCount: data.length,
@@ -23,13 +31,16 @@ class PopularAnimeListPage extends ConsumerWidget {
               },
             );
           },
-          error: (e, stackTrace) {
-            return Center(child: Text('$e'));
+                error: (failure, stackTrace) {
+                  return Center(child: Text('${(failure as Failure).message}'));
           },
           loading: () {
             return Center(child: CircularProgressIndicator());
           },
         ),
+            ),
+          ],
+        )
       ),
     );
   }

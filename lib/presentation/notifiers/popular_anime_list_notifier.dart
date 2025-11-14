@@ -7,7 +7,7 @@ part 'popular_anime_list_notifier.g.dart';
 @riverpod
 class PopularAnimeListNotifier extends _$PopularAnimeListNotifier {
   @override
-  FutureOr<List<Anime>> build() async {
+  Future<List<Anime>> build() async {
     return _loadPopularAnime();
   }
 
