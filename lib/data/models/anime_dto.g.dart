@@ -25,16 +25,14 @@ _AnimeAttributesDto _$AnimeAttributesDtoFromJson(Map<String, dynamic> json) =>
       canonicalTitle: json['canonicalTitle'] as String,
       synopsis: json['synopsis'] as String,
       description: json['description'] as String?,
-      posterImageUrl: json['posterImageUrl'] == null
+      posterImage: json['posterImage'] == null
           ? null
           : PosterImageDto.fromJson(
-              json['posterImageUrl'] as Map<String, dynamic>,
+              json['posterImage'] as Map<String, dynamic>,
             ),
-      coverImageUrl: json['coverImageUrl'] == null
+      coverImage: json['coverImage'] == null
           ? null
-          : CoverageImageDto.fromJson(
-              json['coverImageUrl'] as Map<String, dynamic>,
-            ),
+          : CoverImageDto.fromJson(json['coverImage'] as Map<String, dynamic>),
       averageRating: json['averageRating'] as String?,
       episodeCount: (json['episodeCount'] as num?)?.toInt(),
       showType: json['showType'] as String?,
@@ -46,8 +44,8 @@ Map<String, dynamic> _$AnimeAttributesDtoToJson(_AnimeAttributesDto instance) =>
       'canonicalTitle': instance.canonicalTitle,
       'synopsis': instance.synopsis,
       'description': instance.description,
-      'posterImageUrl': instance.posterImageUrl,
-      'coverImageUrl': instance.coverImageUrl,
+      'posterImage': instance.posterImage,
+      'coverImage': instance.coverImage,
       'averageRating': instance.averageRating,
       'episodeCount': instance.episodeCount,
       'showType': instance.showType,
@@ -72,15 +70,15 @@ Map<String, dynamic> _$PosterImageDtoToJson(_PosterImageDto instance) =>
       'original': instance.original,
     };
 
-_CoverageImageDto _$CoverageImageDtoFromJson(Map<String, dynamic> json) =>
-    _CoverageImageDto(
+_CoverImageDto _$CoverImageDtoFromJson(Map<String, dynamic> json) =>
+    _CoverImageDto(
       tiny: json['tiny'] as String?,
       small: json['small'] as String?,
       large: json['large'] as String?,
       original: json['original'] as String?,
     );
 
-Map<String, dynamic> _$CoverageImageDtoToJson(_CoverageImageDto instance) =>
+Map<String, dynamic> _$CoverImageDtoToJson(_CoverImageDto instance) =>
     <String, dynamic>{
       'tiny': instance.tiny,
       'small': instance.small,

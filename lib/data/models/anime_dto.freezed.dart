@@ -302,7 +302,7 @@ $AnimeAttributesDtoCopyWith<$Res> get attributes {
 /// @nodoc
 mixin _$AnimeAttributesDto {
 
- String get canonicalTitle; String get synopsis; String? get description; PosterImageDto? get posterImageUrl; CoverageImageDto? get coverImageUrl; String? get averageRating; int? get episodeCount; String? get showType; String? get status;
+ String get canonicalTitle; String get synopsis; String? get description; PosterImageDto? get posterImage; CoverImageDto? get coverImage; String? get averageRating; int? get episodeCount; String? get showType; String? get status;
 /// Create a copy of AnimeAttributesDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -315,16 +315,16 @@ $AnimeAttributesDtoCopyWith<AnimeAttributesDto> get copyWith => _$AnimeAttribute
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AnimeAttributesDto&&(identical(other.canonicalTitle, canonicalTitle) || other.canonicalTitle == canonicalTitle)&&(identical(other.synopsis, synopsis) || other.synopsis == synopsis)&&(identical(other.description, description) || other.description == description)&&(identical(other.posterImageUrl, posterImageUrl) || other.posterImageUrl == posterImageUrl)&&(identical(other.coverImageUrl, coverImageUrl) || other.coverImageUrl == coverImageUrl)&&(identical(other.averageRating, averageRating) || other.averageRating == averageRating)&&(identical(other.episodeCount, episodeCount) || other.episodeCount == episodeCount)&&(identical(other.showType, showType) || other.showType == showType)&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AnimeAttributesDto&&(identical(other.canonicalTitle, canonicalTitle) || other.canonicalTitle == canonicalTitle)&&(identical(other.synopsis, synopsis) || other.synopsis == synopsis)&&(identical(other.description, description) || other.description == description)&&(identical(other.posterImage, posterImage) || other.posterImage == posterImage)&&(identical(other.coverImage, coverImage) || other.coverImage == coverImage)&&(identical(other.averageRating, averageRating) || other.averageRating == averageRating)&&(identical(other.episodeCount, episodeCount) || other.episodeCount == episodeCount)&&(identical(other.showType, showType) || other.showType == showType)&&(identical(other.status, status) || other.status == status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,canonicalTitle,synopsis,description,posterImageUrl,coverImageUrl,averageRating,episodeCount,showType,status);
+int get hashCode => Object.hash(runtimeType,canonicalTitle,synopsis,description,posterImage,coverImage,averageRating,episodeCount,showType,status);
 
 @override
 String toString() {
-  return 'AnimeAttributesDto(canonicalTitle: $canonicalTitle, synopsis: $synopsis, description: $description, posterImageUrl: $posterImageUrl, coverImageUrl: $coverImageUrl, averageRating: $averageRating, episodeCount: $episodeCount, showType: $showType, status: $status)';
+  return 'AnimeAttributesDto(canonicalTitle: $canonicalTitle, synopsis: $synopsis, description: $description, posterImage: $posterImage, coverImage: $coverImage, averageRating: $averageRating, episodeCount: $episodeCount, showType: $showType, status: $status)';
 }
 
 
@@ -335,11 +335,11 @@ abstract mixin class $AnimeAttributesDtoCopyWith<$Res>  {
   factory $AnimeAttributesDtoCopyWith(AnimeAttributesDto value, $Res Function(AnimeAttributesDto) _then) = _$AnimeAttributesDtoCopyWithImpl;
 @useResult
 $Res call({
- String canonicalTitle, String synopsis, String? description, PosterImageDto? posterImageUrl, CoverageImageDto? coverImageUrl, String? averageRating, int? episodeCount, String? showType, String? status
+ String canonicalTitle, String synopsis, String? description, PosterImageDto? posterImage, CoverImageDto? coverImage, String? averageRating, int? episodeCount, String? showType, String? status
 });
 
 
-$PosterImageDtoCopyWith<$Res>? get posterImageUrl;$CoverageImageDtoCopyWith<$Res>? get coverImageUrl;
+$PosterImageDtoCopyWith<$Res>? get posterImage;$CoverImageDtoCopyWith<$Res>? get coverImage;
 
 }
 /// @nodoc
@@ -352,14 +352,14 @@ class _$AnimeAttributesDtoCopyWithImpl<$Res>
 
 /// Create a copy of AnimeAttributesDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? canonicalTitle = null,Object? synopsis = null,Object? description = freezed,Object? posterImageUrl = freezed,Object? coverImageUrl = freezed,Object? averageRating = freezed,Object? episodeCount = freezed,Object? showType = freezed,Object? status = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? canonicalTitle = null,Object? synopsis = null,Object? description = freezed,Object? posterImage = freezed,Object? coverImage = freezed,Object? averageRating = freezed,Object? episodeCount = freezed,Object? showType = freezed,Object? status = freezed,}) {
   return _then(_self.copyWith(
 canonicalTitle: null == canonicalTitle ? _self.canonicalTitle : canonicalTitle // ignore: cast_nullable_to_non_nullable
 as String,synopsis: null == synopsis ? _self.synopsis : synopsis // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,posterImageUrl: freezed == posterImageUrl ? _self.posterImageUrl : posterImageUrl // ignore: cast_nullable_to_non_nullable
-as PosterImageDto?,coverImageUrl: freezed == coverImageUrl ? _self.coverImageUrl : coverImageUrl // ignore: cast_nullable_to_non_nullable
-as CoverageImageDto?,averageRating: freezed == averageRating ? _self.averageRating : averageRating // ignore: cast_nullable_to_non_nullable
+as String?,posterImage: freezed == posterImage ? _self.posterImage : posterImage // ignore: cast_nullable_to_non_nullable
+as PosterImageDto?,coverImage: freezed == coverImage ? _self.coverImage : coverImage // ignore: cast_nullable_to_non_nullable
+as CoverImageDto?,averageRating: freezed == averageRating ? _self.averageRating : averageRating // ignore: cast_nullable_to_non_nullable
 as String?,episodeCount: freezed == episodeCount ? _self.episodeCount : episodeCount // ignore: cast_nullable_to_non_nullable
 as int?,showType: freezed == showType ? _self.showType : showType // ignore: cast_nullable_to_non_nullable
 as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -370,25 +370,25 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$PosterImageDtoCopyWith<$Res>? get posterImageUrl {
-    if (_self.posterImageUrl == null) {
+$PosterImageDtoCopyWith<$Res>? get posterImage {
+    if (_self.posterImage == null) {
     return null;
   }
 
-  return $PosterImageDtoCopyWith<$Res>(_self.posterImageUrl!, (value) {
-    return _then(_self.copyWith(posterImageUrl: value));
+  return $PosterImageDtoCopyWith<$Res>(_self.posterImage!, (value) {
+    return _then(_self.copyWith(posterImage: value));
   });
 }/// Create a copy of AnimeAttributesDto
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$CoverageImageDtoCopyWith<$Res>? get coverImageUrl {
-    if (_self.coverImageUrl == null) {
+$CoverImageDtoCopyWith<$Res>? get coverImage {
+    if (_self.coverImage == null) {
     return null;
   }
 
-  return $CoverageImageDtoCopyWith<$Res>(_self.coverImageUrl!, (value) {
-    return _then(_self.copyWith(coverImageUrl: value));
+  return $CoverImageDtoCopyWith<$Res>(_self.coverImage!, (value) {
+    return _then(_self.copyWith(coverImage: value));
   });
 }
 }
@@ -472,10 +472,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String canonicalTitle,  String synopsis,  String? description,  PosterImageDto? posterImageUrl,  CoverageImageDto? coverImageUrl,  String? averageRating,  int? episodeCount,  String? showType,  String? status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String canonicalTitle,  String synopsis,  String? description,  PosterImageDto? posterImage,  CoverImageDto? coverImage,  String? averageRating,  int? episodeCount,  String? showType,  String? status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AnimeAttributesDto() when $default != null:
-return $default(_that.canonicalTitle,_that.synopsis,_that.description,_that.posterImageUrl,_that.coverImageUrl,_that.averageRating,_that.episodeCount,_that.showType,_that.status);case _:
+return $default(_that.canonicalTitle,_that.synopsis,_that.description,_that.posterImage,_that.coverImage,_that.averageRating,_that.episodeCount,_that.showType,_that.status);case _:
   return orElse();
 
 }
@@ -493,10 +493,10 @@ return $default(_that.canonicalTitle,_that.synopsis,_that.description,_that.post
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String canonicalTitle,  String synopsis,  String? description,  PosterImageDto? posterImageUrl,  CoverageImageDto? coverImageUrl,  String? averageRating,  int? episodeCount,  String? showType,  String? status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String canonicalTitle,  String synopsis,  String? description,  PosterImageDto? posterImage,  CoverImageDto? coverImage,  String? averageRating,  int? episodeCount,  String? showType,  String? status)  $default,) {final _that = this;
 switch (_that) {
 case _AnimeAttributesDto():
-return $default(_that.canonicalTitle,_that.synopsis,_that.description,_that.posterImageUrl,_that.coverImageUrl,_that.averageRating,_that.episodeCount,_that.showType,_that.status);case _:
+return $default(_that.canonicalTitle,_that.synopsis,_that.description,_that.posterImage,_that.coverImage,_that.averageRating,_that.episodeCount,_that.showType,_that.status);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -513,10 +513,10 @@ return $default(_that.canonicalTitle,_that.synopsis,_that.description,_that.post
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String canonicalTitle,  String synopsis,  String? description,  PosterImageDto? posterImageUrl,  CoverageImageDto? coverImageUrl,  String? averageRating,  int? episodeCount,  String? showType,  String? status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String canonicalTitle,  String synopsis,  String? description,  PosterImageDto? posterImage,  CoverImageDto? coverImage,  String? averageRating,  int? episodeCount,  String? showType,  String? status)?  $default,) {final _that = this;
 switch (_that) {
 case _AnimeAttributesDto() when $default != null:
-return $default(_that.canonicalTitle,_that.synopsis,_that.description,_that.posterImageUrl,_that.coverImageUrl,_that.averageRating,_that.episodeCount,_that.showType,_that.status);case _:
+return $default(_that.canonicalTitle,_that.synopsis,_that.description,_that.posterImage,_that.coverImage,_that.averageRating,_that.episodeCount,_that.showType,_that.status);case _:
   return null;
 
 }
@@ -528,14 +528,14 @@ return $default(_that.canonicalTitle,_that.synopsis,_that.description,_that.post
 @JsonSerializable()
 
 class _AnimeAttributesDto implements AnimeAttributesDto {
-  const _AnimeAttributesDto({required this.canonicalTitle, required this.synopsis, this.description, this.posterImageUrl, this.coverImageUrl, this.averageRating, this.episodeCount, this.showType, this.status});
+  const _AnimeAttributesDto({required this.canonicalTitle, required this.synopsis, this.description, this.posterImage, this.coverImage, this.averageRating, this.episodeCount, this.showType, this.status});
   factory _AnimeAttributesDto.fromJson(Map<String, dynamic> json) => _$AnimeAttributesDtoFromJson(json);
 
 @override final  String canonicalTitle;
 @override final  String synopsis;
 @override final  String? description;
-@override final  PosterImageDto? posterImageUrl;
-@override final  CoverageImageDto? coverImageUrl;
+@override final  PosterImageDto? posterImage;
+@override final  CoverImageDto? coverImage;
 @override final  String? averageRating;
 @override final  int? episodeCount;
 @override final  String? showType;
@@ -554,16 +554,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AnimeAttributesDto&&(identical(other.canonicalTitle, canonicalTitle) || other.canonicalTitle == canonicalTitle)&&(identical(other.synopsis, synopsis) || other.synopsis == synopsis)&&(identical(other.description, description) || other.description == description)&&(identical(other.posterImageUrl, posterImageUrl) || other.posterImageUrl == posterImageUrl)&&(identical(other.coverImageUrl, coverImageUrl) || other.coverImageUrl == coverImageUrl)&&(identical(other.averageRating, averageRating) || other.averageRating == averageRating)&&(identical(other.episodeCount, episodeCount) || other.episodeCount == episodeCount)&&(identical(other.showType, showType) || other.showType == showType)&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AnimeAttributesDto&&(identical(other.canonicalTitle, canonicalTitle) || other.canonicalTitle == canonicalTitle)&&(identical(other.synopsis, synopsis) || other.synopsis == synopsis)&&(identical(other.description, description) || other.description == description)&&(identical(other.posterImage, posterImage) || other.posterImage == posterImage)&&(identical(other.coverImage, coverImage) || other.coverImage == coverImage)&&(identical(other.averageRating, averageRating) || other.averageRating == averageRating)&&(identical(other.episodeCount, episodeCount) || other.episodeCount == episodeCount)&&(identical(other.showType, showType) || other.showType == showType)&&(identical(other.status, status) || other.status == status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,canonicalTitle,synopsis,description,posterImageUrl,coverImageUrl,averageRating,episodeCount,showType,status);
+int get hashCode => Object.hash(runtimeType,canonicalTitle,synopsis,description,posterImage,coverImage,averageRating,episodeCount,showType,status);
 
 @override
 String toString() {
-  return 'AnimeAttributesDto(canonicalTitle: $canonicalTitle, synopsis: $synopsis, description: $description, posterImageUrl: $posterImageUrl, coverImageUrl: $coverImageUrl, averageRating: $averageRating, episodeCount: $episodeCount, showType: $showType, status: $status)';
+  return 'AnimeAttributesDto(canonicalTitle: $canonicalTitle, synopsis: $synopsis, description: $description, posterImage: $posterImage, coverImage: $coverImage, averageRating: $averageRating, episodeCount: $episodeCount, showType: $showType, status: $status)';
 }
 
 
@@ -574,11 +574,11 @@ abstract mixin class _$AnimeAttributesDtoCopyWith<$Res> implements $AnimeAttribu
   factory _$AnimeAttributesDtoCopyWith(_AnimeAttributesDto value, $Res Function(_AnimeAttributesDto) _then) = __$AnimeAttributesDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String canonicalTitle, String synopsis, String? description, PosterImageDto? posterImageUrl, CoverageImageDto? coverImageUrl, String? averageRating, int? episodeCount, String? showType, String? status
+ String canonicalTitle, String synopsis, String? description, PosterImageDto? posterImage, CoverImageDto? coverImage, String? averageRating, int? episodeCount, String? showType, String? status
 });
 
 
-@override $PosterImageDtoCopyWith<$Res>? get posterImageUrl;@override $CoverageImageDtoCopyWith<$Res>? get coverImageUrl;
+@override $PosterImageDtoCopyWith<$Res>? get posterImage;@override $CoverImageDtoCopyWith<$Res>? get coverImage;
 
 }
 /// @nodoc
@@ -591,14 +591,14 @@ class __$AnimeAttributesDtoCopyWithImpl<$Res>
 
 /// Create a copy of AnimeAttributesDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? canonicalTitle = null,Object? synopsis = null,Object? description = freezed,Object? posterImageUrl = freezed,Object? coverImageUrl = freezed,Object? averageRating = freezed,Object? episodeCount = freezed,Object? showType = freezed,Object? status = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? canonicalTitle = null,Object? synopsis = null,Object? description = freezed,Object? posterImage = freezed,Object? coverImage = freezed,Object? averageRating = freezed,Object? episodeCount = freezed,Object? showType = freezed,Object? status = freezed,}) {
   return _then(_AnimeAttributesDto(
 canonicalTitle: null == canonicalTitle ? _self.canonicalTitle : canonicalTitle // ignore: cast_nullable_to_non_nullable
 as String,synopsis: null == synopsis ? _self.synopsis : synopsis // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,posterImageUrl: freezed == posterImageUrl ? _self.posterImageUrl : posterImageUrl // ignore: cast_nullable_to_non_nullable
-as PosterImageDto?,coverImageUrl: freezed == coverImageUrl ? _self.coverImageUrl : coverImageUrl // ignore: cast_nullable_to_non_nullable
-as CoverageImageDto?,averageRating: freezed == averageRating ? _self.averageRating : averageRating // ignore: cast_nullable_to_non_nullable
+as String?,posterImage: freezed == posterImage ? _self.posterImage : posterImage // ignore: cast_nullable_to_non_nullable
+as PosterImageDto?,coverImage: freezed == coverImage ? _self.coverImage : coverImage // ignore: cast_nullable_to_non_nullable
+as CoverImageDto?,averageRating: freezed == averageRating ? _self.averageRating : averageRating // ignore: cast_nullable_to_non_nullable
 as String?,episodeCount: freezed == episodeCount ? _self.episodeCount : episodeCount // ignore: cast_nullable_to_non_nullable
 as int?,showType: freezed == showType ? _self.showType : showType // ignore: cast_nullable_to_non_nullable
 as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -610,25 +610,25 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$PosterImageDtoCopyWith<$Res>? get posterImageUrl {
-    if (_self.posterImageUrl == null) {
+$PosterImageDtoCopyWith<$Res>? get posterImage {
+    if (_self.posterImage == null) {
     return null;
   }
 
-  return $PosterImageDtoCopyWith<$Res>(_self.posterImageUrl!, (value) {
-    return _then(_self.copyWith(posterImageUrl: value));
+  return $PosterImageDtoCopyWith<$Res>(_self.posterImage!, (value) {
+    return _then(_self.copyWith(posterImage: value));
   });
 }/// Create a copy of AnimeAttributesDto
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$CoverageImageDtoCopyWith<$Res>? get coverImageUrl {
-    if (_self.coverImageUrl == null) {
+$CoverImageDtoCopyWith<$Res>? get coverImage {
+    if (_self.coverImage == null) {
     return null;
   }
 
-  return $CoverageImageDtoCopyWith<$Res>(_self.coverImageUrl!, (value) {
-    return _then(_self.copyWith(coverImageUrl: value));
+  return $CoverImageDtoCopyWith<$Res>(_self.coverImage!, (value) {
+    return _then(_self.copyWith(coverImage: value));
   });
 }
 }
@@ -910,22 +910,22 @@ as String?,
 
 
 /// @nodoc
-mixin _$CoverageImageDto {
+mixin _$CoverImageDto {
 
  String? get tiny; String? get small; String? get large; String? get original;
-/// Create a copy of CoverageImageDto
+/// Create a copy of CoverImageDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$CoverageImageDtoCopyWith<CoverageImageDto> get copyWith => _$CoverageImageDtoCopyWithImpl<CoverageImageDto>(this as CoverageImageDto, _$identity);
+$CoverImageDtoCopyWith<CoverImageDto> get copyWith => _$CoverImageDtoCopyWithImpl<CoverImageDto>(this as CoverImageDto, _$identity);
 
-  /// Serializes this CoverageImageDto to a JSON map.
+  /// Serializes this CoverImageDto to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoverageImageDto&&(identical(other.tiny, tiny) || other.tiny == tiny)&&(identical(other.small, small) || other.small == small)&&(identical(other.large, large) || other.large == large)&&(identical(other.original, original) || other.original == original));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoverImageDto&&(identical(other.tiny, tiny) || other.tiny == tiny)&&(identical(other.small, small) || other.small == small)&&(identical(other.large, large) || other.large == large)&&(identical(other.original, original) || other.original == original));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -934,15 +934,15 @@ int get hashCode => Object.hash(runtimeType,tiny,small,large,original);
 
 @override
 String toString() {
-  return 'CoverageImageDto(tiny: $tiny, small: $small, large: $large, original: $original)';
+  return 'CoverImageDto(tiny: $tiny, small: $small, large: $large, original: $original)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $CoverageImageDtoCopyWith<$Res>  {
-  factory $CoverageImageDtoCopyWith(CoverageImageDto value, $Res Function(CoverageImageDto) _then) = _$CoverageImageDtoCopyWithImpl;
+abstract mixin class $CoverImageDtoCopyWith<$Res>  {
+  factory $CoverImageDtoCopyWith(CoverImageDto value, $Res Function(CoverImageDto) _then) = _$CoverImageDtoCopyWithImpl;
 @useResult
 $Res call({
  String? tiny, String? small, String? large, String? original
@@ -953,14 +953,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$CoverageImageDtoCopyWithImpl<$Res>
-    implements $CoverageImageDtoCopyWith<$Res> {
-  _$CoverageImageDtoCopyWithImpl(this._self, this._then);
+class _$CoverImageDtoCopyWithImpl<$Res>
+    implements $CoverImageDtoCopyWith<$Res> {
+  _$CoverImageDtoCopyWithImpl(this._self, this._then);
 
-  final CoverageImageDto _self;
-  final $Res Function(CoverageImageDto) _then;
+  final CoverImageDto _self;
+  final $Res Function(CoverImageDto) _then;
 
-/// Create a copy of CoverageImageDto
+/// Create a copy of CoverImageDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? tiny = freezed,Object? small = freezed,Object? large = freezed,Object? original = freezed,}) {
   return _then(_self.copyWith(
@@ -975,8 +975,8 @@ as String?,
 }
 
 
-/// Adds pattern-matching-related methods to [CoverageImageDto].
-extension CoverageImageDtoPatterns on CoverageImageDto {
+/// Adds pattern-matching-related methods to [CoverImageDto].
+extension CoverImageDtoPatterns on CoverImageDto {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -989,10 +989,10 @@ extension CoverageImageDtoPatterns on CoverageImageDto {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CoverageImageDto value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CoverImageDto value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _CoverageImageDto() when $default != null:
+case _CoverImageDto() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -1011,10 +1011,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CoverageImageDto value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CoverImageDto value)  $default,){
 final _that = this;
 switch (_that) {
-case _CoverageImageDto():
+case _CoverImageDto():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -1032,10 +1032,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CoverageImageDto value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CoverImageDto value)?  $default,){
 final _that = this;
 switch (_that) {
-case _CoverageImageDto() when $default != null:
+case _CoverImageDto() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -1055,7 +1055,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? tiny,  String? small,  String? large,  String? original)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _CoverageImageDto() when $default != null:
+case _CoverImageDto() when $default != null:
 return $default(_that.tiny,_that.small,_that.large,_that.original);case _:
   return orElse();
 
@@ -1076,7 +1076,7 @@ return $default(_that.tiny,_that.small,_that.large,_that.original);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? tiny,  String? small,  String? large,  String? original)  $default,) {final _that = this;
 switch (_that) {
-case _CoverageImageDto():
+case _CoverImageDto():
 return $default(_that.tiny,_that.small,_that.large,_that.original);case _:
   throw StateError('Unexpected subclass');
 
@@ -1096,7 +1096,7 @@ return $default(_that.tiny,_that.small,_that.large,_that.original);case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? tiny,  String? small,  String? large,  String? original)?  $default,) {final _that = this;
 switch (_that) {
-case _CoverageImageDto() when $default != null:
+case _CoverImageDto() when $default != null:
 return $default(_that.tiny,_that.small,_that.large,_that.original);case _:
   return null;
 
@@ -1108,29 +1108,29 @@ return $default(_that.tiny,_that.small,_that.large,_that.original);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _CoverageImageDto implements CoverageImageDto {
-  const _CoverageImageDto({this.tiny, this.small, this.large, this.original});
-  factory _CoverageImageDto.fromJson(Map<String, dynamic> json) => _$CoverageImageDtoFromJson(json);
+class _CoverImageDto implements CoverImageDto {
+  const _CoverImageDto({this.tiny, this.small, this.large, this.original});
+  factory _CoverImageDto.fromJson(Map<String, dynamic> json) => _$CoverImageDtoFromJson(json);
 
 @override final  String? tiny;
 @override final  String? small;
 @override final  String? large;
 @override final  String? original;
 
-/// Create a copy of CoverageImageDto
+/// Create a copy of CoverImageDto
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$CoverageImageDtoCopyWith<_CoverageImageDto> get copyWith => __$CoverageImageDtoCopyWithImpl<_CoverageImageDto>(this, _$identity);
+_$CoverImageDtoCopyWith<_CoverImageDto> get copyWith => __$CoverImageDtoCopyWithImpl<_CoverImageDto>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$CoverageImageDtoToJson(this, );
+  return _$CoverImageDtoToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CoverageImageDto&&(identical(other.tiny, tiny) || other.tiny == tiny)&&(identical(other.small, small) || other.small == small)&&(identical(other.large, large) || other.large == large)&&(identical(other.original, original) || other.original == original));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CoverImageDto&&(identical(other.tiny, tiny) || other.tiny == tiny)&&(identical(other.small, small) || other.small == small)&&(identical(other.large, large) || other.large == large)&&(identical(other.original, original) || other.original == original));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1139,15 +1139,15 @@ int get hashCode => Object.hash(runtimeType,tiny,small,large,original);
 
 @override
 String toString() {
-  return 'CoverageImageDto(tiny: $tiny, small: $small, large: $large, original: $original)';
+  return 'CoverImageDto(tiny: $tiny, small: $small, large: $large, original: $original)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$CoverageImageDtoCopyWith<$Res> implements $CoverageImageDtoCopyWith<$Res> {
-  factory _$CoverageImageDtoCopyWith(_CoverageImageDto value, $Res Function(_CoverageImageDto) _then) = __$CoverageImageDtoCopyWithImpl;
+abstract mixin class _$CoverImageDtoCopyWith<$Res> implements $CoverImageDtoCopyWith<$Res> {
+  factory _$CoverImageDtoCopyWith(_CoverImageDto value, $Res Function(_CoverImageDto) _then) = __$CoverImageDtoCopyWithImpl;
 @override @useResult
 $Res call({
  String? tiny, String? small, String? large, String? original
@@ -1158,17 +1158,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$CoverageImageDtoCopyWithImpl<$Res>
-    implements _$CoverageImageDtoCopyWith<$Res> {
-  __$CoverageImageDtoCopyWithImpl(this._self, this._then);
+class __$CoverImageDtoCopyWithImpl<$Res>
+    implements _$CoverImageDtoCopyWith<$Res> {
+  __$CoverImageDtoCopyWithImpl(this._self, this._then);
 
-  final _CoverageImageDto _self;
-  final $Res Function(_CoverageImageDto) _then;
+  final _CoverImageDto _self;
+  final $Res Function(_CoverImageDto) _then;
 
-/// Create a copy of CoverageImageDto
+/// Create a copy of CoverImageDto
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? tiny = freezed,Object? small = freezed,Object? large = freezed,Object? original = freezed,}) {
-  return _then(_CoverageImageDto(
+  return _then(_CoverImageDto(
 tiny: freezed == tiny ? _self.tiny : tiny // ignore: cast_nullable_to_non_nullable
 as String?,small: freezed == small ? _self.small : small // ignore: cast_nullable_to_non_nullable
 as String?,large: freezed == large ? _self.large : large // ignore: cast_nullable_to_non_nullable

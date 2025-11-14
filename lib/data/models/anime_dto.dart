@@ -21,8 +21,8 @@ abstract class AnimeAttributesDto with _$AnimeAttributesDto {
     required String canonicalTitle,
     required String synopsis,
     String? description,
-    PosterImageDto? posterImageUrl,
-    CoverageImageDto? coverImageUrl,
+    PosterImageDto? posterImage,
+    CoverImageDto? coverImage,
     String? averageRating,
     int? episodeCount,
     String? showType,
@@ -48,16 +48,16 @@ abstract class PosterImageDto with _$PosterImageDto {
 }
 
 @freezed
-abstract class CoverageImageDto with _$CoverageImageDto {
-  const factory CoverageImageDto({
+abstract class CoverImageDto with _$CoverImageDto {
+  const factory CoverImageDto({
     String? tiny,
     String? small,
     String? large,
     String? original,
-  }) = _CoverageImageDto;
+  }) = _CoverImageDto;
 
-  factory CoverageImageDto.fromJson(Map<String, dynamic> json) =>
-      _$CoverageImageDtoFromJson(json);
+  factory CoverImageDto.fromJson(Map<String, dynamic> json) =>
+      _$CoverImageDtoFromJson(json);
 }
 
 

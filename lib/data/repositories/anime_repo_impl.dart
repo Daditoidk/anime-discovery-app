@@ -4,6 +4,7 @@ import 'package:anime_discovery_app/data/datasources/kitsu_anime_remote_datasour
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:anime_discovery_app/domain/repositories/i_anime_repo.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 
 class AnimeRepositoryImpl implements IAnimeRepository {
   final IKitsuAPIRemoteDataSource api;
@@ -20,6 +21,8 @@ class AnimeRepositoryImpl implements IAnimeRepository {
           .toList();
 
       return Right(popularAnimeEntities);
+    } on DioException catch (e){
+      return Left(NetworkFailure(message: e.message));
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));
     }
