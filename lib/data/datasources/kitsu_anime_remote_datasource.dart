@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:anime_discovery_app/core/constants/const.dart';
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/data/models/anime_dto.dart';
@@ -22,14 +24,11 @@ class KitsuAPIRemoteDataSourceImpl implements IKitsuAPIRemoteDataSource {
 
       final List<dynamic> data = response.data['data'];
 
-      return data.map((json) {
-        if (json['type'] != kAnimeType) {
-          throw Exception(
-            'Fetched incorrected data it should be type: $kAnimeType',
-          );
-        }
-        return AnimeDto.fromJson(json);
-      }).toList();
+      return data
+          .where((json) => json['type'] == kAnimeType)
+          .map((json) => AnimeDto.fromJson(json))
+          .toList();
+          
     } on DioException {
       // let repository handle DioException → Failure mapping
       rethrow;
