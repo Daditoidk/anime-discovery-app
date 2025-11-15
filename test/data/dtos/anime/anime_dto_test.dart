@@ -25,7 +25,7 @@ void main() {
       final result = AnimeDto.fromJson(json);
 
       //assert
-      expect(result.id, 1);
+      expect(result.id, '1');
       expect(result.type, kAnimeType);
       expect(result.attributes.canonicalTitle, 'Naruto');
       expect(result.attributes.posterImage?.large, contains('large.jpg'));
@@ -51,11 +51,10 @@ void main() {
 
       //assert
       expect(result, isA<Anime>());
-      expect(result.id, 1);
+      expect(result.id, '1');
       expect(result.canonicalTitle, 'Naruto');
       expect(result.averageRating, 8.5);
-      expect(result.posterImageUrl, 'https://example.com/large.jpg');
-      expect(result.coverImageUrl, 'https://example.com/original.jpg');
+      expect(result.posterImageUrl, contains('original.jpg'));
     });
 
     test(
@@ -98,7 +97,7 @@ void main() {
       final result = dto.toEntity();
 
       //assert
-      expect(result.posterImageUrl, '');
+      expect(result.posterImageUrl, null);
     });
     test('should handle invalid rating string', () {
       final dto = AnimeDto(

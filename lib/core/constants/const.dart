@@ -1,4 +1,4 @@
-final String kKitsuAPI = 'https://kitsu.io/api/edge';
-final String kPopularAnimeEndpoint = '/anime';
+const String kKitsuAPI = 'https://kitsu.io/api/edge';
+const String kPopularAnimeEndpoint = '/anime';
 
-final String kAnimeType = 'anime';
+const String kAnimeType = 'anime';
