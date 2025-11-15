@@ -1,3 +1,4 @@
+import 'package:anime_discovery_app/core/constants/const.dart';
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/data/datasources/kitsu_anime_remote_datasource.dart';
 import 'package:anime_discovery_app/data/models/anime_dto.dart';
@@ -19,6 +20,9 @@ void main() {
     mockDataSource = MockIKitsuAPIRemoteDataSource();
     repository = AnimeRepositoryImpl(mockDataSource);
   });
+
+  //Happy path
+  //Error path
 
   group('getPopularAnime()', () {
     final tAnimeDto = AnimeDto(
@@ -108,5 +112,21 @@ void main() {
         expect(animeList[1].averageRating, 9.0);
       });
     }); //multiple dtos
+
+    test('return empty list', () async {
+      // arrange
+      when(mockDataSource.getPopularAnime()).thenAnswer((_) async => []);
+
+      //act
+      final response = await repository.getPopularAnime();
+
+      //assert
+      expect(response, isA<Right<dynamic, List<Anime>>>());
+
+      response.fold(
+        (failure) => fail('should be Right'),
+        (animeList) => expect(animeList.isEmpty, true),
+      );
+    });
   }); //group
 }

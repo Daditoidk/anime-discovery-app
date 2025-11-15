@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:anime_discovery_app/data/datasources/kitsu_anime_remote_datasource.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -110,6 +112,81 @@ void main() {
 
       //act & assert
       expect(() => dataSource.getPopularAnime(), throwsException);
+    });
+
+    test('should throw timeout exception when request times out', () async {
+      //arrange
+      when(
+        mockDio.get(any, queryParameters: anyNamed('queryParameters')),
+      ).thenThrow((_) => TimeoutException('Request timed out'));
+
+      //act & assert
+      expect(() => dataSource.getPopularAnime(), throwsException);
+    });
+
+    test('should skip the object if type is not anime', () async {
+      //arrange
+      final tFakeApiData = {
+        'data': [
+          {
+            'id': '1',
+            'type': 'anime',
+            'attributes': {
+              'synopsis': '',
+              'canonicalTitle': 'Naruto',
+              'posterImage': {
+                'original': 'https://example.com/naruto.jpg',
+                'large': 'https://example.com/naruto_large.jpg',
+              },
+              'averageRating': '8.5',
+            },
+          },
+          {
+            'id': '2',
+            'type': 'manga',
+            'attributes': {
+              'synopsis': '',
+              'canonicalTitle': 'Spiderman',
+              'posterImage': {
+                'original': 'https://example.com/naruto.jpg',
+                'large': 'https://example.com/naruto_large.jpg',
+              },
+              'averageRating': '8.5',
+            },
+          },
+          {
+            'id': '3',
+            'type': 'anime',
+            'attributes': {
+              'synopsis': '',
+              'canonicalTitle': 'One piece',
+              'posterImage': {
+                'original': 'https://example.com/naruto.jpg',
+                'large': 'https://example.com/naruto_large.jpg',
+              },
+              'averageRating': '8.5',
+            },
+          },
+        ],
+      };
+
+      when(
+        mockDio.get(any, queryParameters: anyNamed('queryParameters')),
+      ).thenAnswer(
+        (_) async => Response(
+          data: tFakeApiData,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/anime'),
+        ),
+      );
+
+      //act
+      final response = await dataSource.getPopularAnime();
+
+      //assert
+      expect(response.length, 2);
+      expect(response[0].id, '1');
+      expect(response[1].id, '3');
     });
   }); //group
 }
