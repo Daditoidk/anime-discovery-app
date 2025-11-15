@@ -9,10 +9,9 @@ extension AnimeDtoMapper on AnimeDto {
       synopsis: attributes.synopsis,
       description: attributes.description,
       posterImageUrl:
-          attributes.posterImageUrl?.medium ??
-          attributes.posterImageUrl?.original,
+          attributes.posterImage?.original ?? attributes.posterImage?.medium,
       coverImageUrl:
-          attributes.coverImageUrl?.large ?? attributes.coverImageUrl?.original,
+          attributes.coverImage?.large ?? attributes.coverImage?.original,
       averageRating: double.tryParse(attributes.averageRating ?? '') ?? 0.0,
       episodeCount: attributes.episodeCount,
       showType: attributes.showType,

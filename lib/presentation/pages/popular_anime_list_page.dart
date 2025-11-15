@@ -22,25 +22,44 @@ class PopularAnimeListPage extends ConsumerWidget {
             ),
             Flexible(
               child: listAsync.when(
-          data: (List<Anime> data) {
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                final currentAnime = data[index];
-                return AnimeTile(anime: currentAnime);
-              },
-            );
-          },
+                data: (List<Anime> data) {
+                  return ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final currentAnime = data[index];
+                      return AnimeTile(
+                        key: ValueKey('anime_tile_${currentAnime.id}'),
+                        anime: currentAnime,
+                      );
+                    },
+                  );
+                },
                 error: (failure, stackTrace) {
-                  return Center(child: Text('${(failure as Failure).message}'));
-          },
-          loading: () {
-            return Center(child: CircularProgressIndicator());
-          },
-        ),
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error, size: 48, color: Colors.red),
+                        const SizedBox(height: 16),
+                        Text((failure as Failure).message ?? ''),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => ref
+                              .read(popularAnimeListProvider.notifier)
+                              .refresh(),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                loading: () {
+                  return Center(child: CircularProgressIndicator());
+                },
+              ),
             ),
           ],
-        )
+        ),
       ),
     );
   }

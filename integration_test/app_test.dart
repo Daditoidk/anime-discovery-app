@@ -1,3 +1,4 @@
+import 'package:anime_discovery_app/presentation/widgets/anime_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -9,7 +10,7 @@ void main() {
   testWidgets('Popular anime list loads and displays', (tester) async {
     app.main();
     //First build
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
@@ -18,6 +19,7 @@ void main() {
 
     expect(find.byType(ListView), findsOneWidget);
 
-    expect(find.byKey(const Key('anime_card')), findsAtLeastNWidgets(1));
+    expect(find.byType(AnimeTile), findsAtLeastNWidgets(1));
+
   });
 }
