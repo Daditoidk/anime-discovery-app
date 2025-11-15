@@ -17,7 +17,7 @@ void main() {
     //API call delay to wait for data to load
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
-    expect(find.byType(ListView), findsOneWidget);
+    expect(find.byType(SliverList), findsOneWidget);
 
     expect(find.byType(AnimeTile), findsAtLeastNWidgets(1));
 
