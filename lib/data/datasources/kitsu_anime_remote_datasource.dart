@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:anime_discovery_app/core/constants/const.dart';
-import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/data/models/anime_dto.dart';
 import 'package:dio/dio.dart';
 

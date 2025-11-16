@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:anime_discovery_app/domain/repositories/i_anime_repo.dart';

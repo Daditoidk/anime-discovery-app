@@ -1,4 +1,3 @@
-import 'package:anime_discovery_app/core/constants/const.dart';
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/data/datasources/kitsu_anime_remote_datasource.dart';
 import 'package:anime_discovery_app/data/models/anime_dto.dart';

@@ -1,7 +1,6 @@
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:anime_discovery_app/presentation/notifiers/popular_anime_list_notifier.dart';
-import 'package:anime_discovery_app/presentation/providers/anime_providers.dart';
 import 'package:anime_discovery_app/presentation/widgets/anime_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
