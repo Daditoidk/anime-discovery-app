@@ -47,7 +47,7 @@ final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
   }
 }
 
-String _$dioHash() => r'033bd86df1430e66e5f9b67328f9445ee368d753';
+String _$dioHash() => r'eb3704527d3340933e3998504e8e9d2384d597df';
 
 @ProviderFor(kitsuAPIRemoteDatasource)
 const kitsuAPIRemoteDatasourceProvider = KitsuAPIRemoteDatasourceProvider._();

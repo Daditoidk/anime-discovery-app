@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'popular_anime_list_notifier.dart';
+part of 'search_anime_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,33 +9,33 @@ part of 'popular_anime_list_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(PopularAnimeList)
-const popularAnimeListProvider = PopularAnimeListProvider._();
+@ProviderFor(SearchAnimeList)
+const searchAnimeListProvider = SearchAnimeListProvider._();
 
-final class PopularAnimeListProvider
-    extends $AsyncNotifierProvider<PopularAnimeList, List<Anime>> {
-  const PopularAnimeListProvider._()
+final class SearchAnimeListProvider
+    extends $AsyncNotifierProvider<SearchAnimeList, List<Anime>> {
+  const SearchAnimeListProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'popularAnimeListProvider',
-        isAutoDispose: false,
+        name: r'searchAnimeListProvider',
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$popularAnimeListHash();
+  String debugGetCreateSourceHash() => _$searchAnimeListHash();
 
   @$internal
   @override
-  PopularAnimeList create() => PopularAnimeList();
+  SearchAnimeList create() => SearchAnimeList();
 }
 
-String _$popularAnimeListHash() => r'32cafaa9497bb04199965bf93abd8ea2aae8e6de';
+String _$searchAnimeListHash() => r'5beb51a32c436544d46b06337c9ba6e6bd23451c';
 
-abstract class _$PopularAnimeList extends $AsyncNotifier<List<Anime>> {
+abstract class _$SearchAnimeList extends $AsyncNotifier<List<Anime>> {
   FutureOr<List<Anime>> build();
   @$mustCallSuper
   @override
