@@ -57,8 +57,8 @@ dev_dependencies:
   build_runner: 2.7.1
   freezed: ^3.2.3
   json_serializable: ^6.9.5
-  mockito: 5.5.0
   flutter_lints: ^5.0.0
+  mocktail: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

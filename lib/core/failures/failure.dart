@@ -1,24 +1,24 @@
-abstract class Failure{
-String? message;
-Failure({this.message});
+abstract class Failure {
+  final String? message;
+  const Failure({this.message = ''});
 }
 
-class ServerFailure extends Failure{
-   ServerFailure({super.message});
+class ServerFailure extends Failure {
+  const ServerFailure({super.message});
 }
 
-class CacheFailure extends Failure{
-   CacheFailure({super.message});
+class CacheFailure extends Failure {
+  const CacheFailure({super.message});
 }
 
-class UnexpectedFailure extends Failure{
-   UnexpectedFailure({super.message});
+class UnexpectedFailure extends Failure {
+  const UnexpectedFailure({super.message});
 }
 
-class NetworkFailure extends Failure{
-   NetworkFailure({super.message});
+class NetworkFailure extends Failure {
+  const NetworkFailure({super.message});
 }
 
-class ApiFailure extends Failure{
-   ApiFailure({super.message});
+class ApiFailure extends Failure {
+  const ApiFailure({super.message});
 }
