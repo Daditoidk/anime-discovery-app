@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 
 abstract class IKitsuAPIRemoteDataSource {
   Future<List<AnimeDto>> getPopularAnime();
-  Future<List<AnimeDto>> searchPopularAnime(
+  Future<List<AnimeDto>> searchAnime(
     String query,
     {CancelToken? cancelToken}
   );
@@ -38,9 +38,11 @@ class KitsuAPIRemoteDataSourceImpl implements IKitsuAPIRemoteDataSource {
   }
 
   @override
-  Future<List<AnimeDto>> searchPopularAnime(
+  Future<List<AnimeDto>> searchAnime(
     String query,
-    {CancelToken? cancelToken},
+    {
+    CancelToken? cancelToken,
+  }
   ) async {
     try {
       final response = await dio.get(
@@ -52,7 +54,7 @@ class KitsuAPIRemoteDataSourceImpl implements IKitsuAPIRemoteDataSource {
       final List<dynamic> data = response.data['data'];
 
       return data.map((json) => AnimeDto.fromJson(json)).toList();
-      
+
     } on DioException {
         rethrow;
     } catch (e) {

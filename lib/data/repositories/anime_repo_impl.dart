@@ -21,7 +21,31 @@ class AnimeRepositoryImpl implements IAnimeRepository {
           .toList();
 
       return Right(popularAnimeEntities);
-    } on DioException catch (e){
+    } on DioException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Anime>>> searchAnime(
+    String query, {
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      final dtos = await api.searchAnime(query, cancelToken: cancelToken);
+
+      final searchedAnimeListEntity = dtos
+          .map((dto) => dto.toEntity())
+          .toList();
+
+      return Right(searchedAnimeListEntity);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) {
+        // cancel token was used, return empty list
+        return Right([]);
+      }
       return Left(NetworkFailure(message: e.message));
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));
