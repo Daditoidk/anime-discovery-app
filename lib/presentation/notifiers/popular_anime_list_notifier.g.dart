@@ -9,34 +9,33 @@ part of 'popular_anime_list_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(PopularAnimeListNotifier)
-const popularAnimeListProvider = PopularAnimeListNotifierProvider._();
+@ProviderFor(PopularAnimeList)
+const popularAnimeListProvider = PopularAnimeListProvider._();
 
-final class PopularAnimeListNotifierProvider
-    extends $AsyncNotifierProvider<PopularAnimeListNotifier, List<Anime>> {
-  const PopularAnimeListNotifierProvider._()
+final class PopularAnimeListProvider
+    extends $AsyncNotifierProvider<PopularAnimeList, List<Anime>> {
+  const PopularAnimeListProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'popularAnimeListProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$popularAnimeListNotifierHash();
+  String debugGetCreateSourceHash() => _$popularAnimeListHash();
 
   @$internal
   @override
-  PopularAnimeListNotifier create() => PopularAnimeListNotifier();
+  PopularAnimeList create() => PopularAnimeList();
 }
 
-String _$popularAnimeListNotifierHash() =>
-    r'f742e067f7b4d56f753b776f4582e307d06d01cd';
+String _$popularAnimeListHash() => r'de03ced9b5a4b795ebaf2739ce684605e61dc00b';
 
-abstract class _$PopularAnimeListNotifier extends $AsyncNotifier<List<Anime>> {
+abstract class _$PopularAnimeList extends $AsyncNotifier<List<Anime>> {
   FutureOr<List<Anime>> build();
   @$mustCallSuper
   @override
