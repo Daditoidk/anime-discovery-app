@@ -6,12 +6,11 @@ import 'package:anime_discovery_app/data/repositories/anime_repo_impl.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
-import 'anime_repo_impl_test.mocks.dart';
+class MockIKitsuAPIRemoteDataSource extends Mock
+    implements IKitsuAPIRemoteDataSource {}
 
-@GenerateMocks([IKitsuAPIRemoteDataSource])
 void main() {
   late AnimeRepositoryImpl repository;
   late MockIKitsuAPIRemoteDataSource mockDataSource;
@@ -46,7 +45,7 @@ void main() {
       () async {
         //arrange
         when(
-          mockDataSource.getPopularAnime(),
+          mockDataSource.getPopularAnime,
         ).thenAnswer((_) async => tAnimeList);
         //act
         final result = await repository.getPopularAnime();
@@ -67,7 +66,7 @@ void main() {
       () async {
         // arrange
         when(
-          mockDataSource.getPopularAnime(),
+          mockDataSource.getPopularAnime,
         ).thenThrow(Exception('Network error'));
 
         //act
@@ -99,7 +98,7 @@ void main() {
         ),
       ];
       when(
-        mockDataSource.getPopularAnime(),
+        mockDataSource.getPopularAnime,
       ).thenAnswer((_) async => tMultipleDtos);
 
       // act
@@ -115,7 +114,7 @@ void main() {
 
     test('return empty list', () async {
       // arrange
-      when(mockDataSource.getPopularAnime()).thenAnswer((_) async => []);
+      when(mockDataSource.getPopularAnime).thenAnswer((_) async => []);
 
       //act
       final response = await repository.getPopularAnime();

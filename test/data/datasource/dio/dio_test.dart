@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:anime_discovery_app/data/datasources/kitsu_anime_remote_datasource.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
-import 'dio_test.mocks.dart';
 
-@GenerateMocks([Dio])
+class MockDio extends Mock implements Dio {}
 void main() {
   late MockDio mockDio;
   late KitsuAPIRemoteDataSourceImpl dataSource;
@@ -40,7 +38,8 @@ void main() {
     test('should perform GET request with correct parameters', () async {
       // arrange
       when(
-        mockDio.get(any, queryParameters: anyNamed('queryParameters')),
+        () =>
+            mockDio.get(any(), queryParameters: any(named: 'queryParameters')),
       ).thenAnswer(
         (_) async => Response(
           data: tResponseData,
@@ -54,6 +53,7 @@ void main() {
 
       // assert
       verify(
+        () =>
         mockDio.get('/anime', queryParameters: {'sort': '-user_count'}),
       ).called(1);
     }); // GET: happy path with correct parameters
@@ -61,7 +61,8 @@ void main() {
     test('should return list animeDTOs when request is succeful', () async {
       //arrange
       when(
-        mockDio.get(any, queryParameters: anyNamed('queryParameters')),
+        () =>
+            mockDio.get(any(), queryParameters: any(named: 'queryParameters')),
       ).thenAnswer(
         (_) async => Response(
           data: tResponseData,
@@ -82,7 +83,8 @@ void main() {
     test('should throw exception when requests fails', () async {
       //arrange
       when(
-        mockDio.get(any, queryParameters: anyNamed('queryParameters')),
+        () =>
+            mockDio.get(any(), queryParameters: any(named: 'queryParameters')),
       ).thenThrow(
         (_) => DioException(
           requestOptions: RequestOptions(path: '/anime'),
@@ -101,7 +103,8 @@ void main() {
     test('should throw exception when response data is malformed', () async {
       //arrange
       when(
-        mockDio.get(any, queryParameters: anyNamed('queryParameters')),
+        () =>
+            mockDio.get(any(), queryParameters: any(named: 'queryParameters')),
       ).thenAnswer(
         (_) async => Response(
           data: {'data': 'invalid'},
@@ -117,7 +120,8 @@ void main() {
     test('should throw timeout exception when request times out', () async {
       //arrange
       when(
-        mockDio.get(any, queryParameters: anyNamed('queryParameters')),
+        () =>
+            mockDio.get(any(), queryParameters: any(named: 'queryParameters')),
       ).thenThrow((_) => TimeoutException('Request timed out'));
 
       //act & assert
@@ -171,7 +175,8 @@ void main() {
       };
 
       when(
-        mockDio.get(any, queryParameters: anyNamed('queryParameters')),
+        () =>
+            mockDio.get(any(), queryParameters: any(named: 'queryParameters')),
       ).thenAnswer(
         (_) async => Response(
           data: tFakeApiData,
