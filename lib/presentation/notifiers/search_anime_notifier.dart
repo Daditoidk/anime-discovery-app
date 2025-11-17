@@ -8,28 +8,58 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'search_anime_notifier.g.dart';
 
 @riverpod
+class SearchQuery extends _$SearchQuery {
+  @override
+  String build() => '';
+
+  void setQuery(String raw) {
+    final String normalized = raw.trim();
+    if (normalized == state) return;
+    state = normalized;
+  }
+
+  void clear() {
+    state = '';
+  }
+}
+
+@riverpod
 class SearchAnimeList extends _$SearchAnimeList {
+  String lastquery = '';
   CancelToken? cancelToken;
   Timer? debounceTimer;
 
   @override
-  FutureOr<List<Anime>> build() => <Anime>[];
+  FutureOr<List<Anime>> build() {
+    ref.onDispose(() {
+      debounceTimer?.cancel();
+      cancelToken?.cancel("new search");
+    });
+    return <Anime>[];
+  }
 
-  void search(String query) {
+  void search() {
+    final String normalizedQuery = ref.read(searchQueryProvider);
+
     cancelToken?.cancel("New search");
     debounceTimer?.cancel();
 
-    if (query.isEmpty) {
+    if (normalizedQuery.isEmpty) {
+      lastquery = '';
       state = const AsyncData([]);
       return;
     }
 
+    if (normalizedQuery == lastquery) return;
+
+    lastquery = normalizedQuery;
+
     debounceTimer = Timer(const Duration(milliseconds: 300), () {
-      _performSearch(query, cancelToken);
+      _performSearch(normalizedQuery);
     });
   }
 
-  Future<void> _performSearch(String query, CancelToken? cancelToken) async {
+  Future<void> _performSearch(String query) async {
     state = AsyncLoading();
 
     cancelToken = CancelToken();
