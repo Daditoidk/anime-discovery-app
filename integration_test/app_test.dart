@@ -38,7 +38,7 @@ void main() {
 
     await tester.enterText(
       find.byKey(const Key('popular-anime-search-input')),
-      'Kimetsu no Yaiba',
+      'Kimetsu',
     );
 
     await tester.pumpAndSettle(const Duration(seconds: 5));
