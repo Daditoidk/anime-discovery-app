@@ -1,10 +1,10 @@
-import 'package:anime_discovery_app/core/constants/const.dart';
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/data/datasources/kitsu_anime_remote_datasource.dart';
 import 'package:anime_discovery_app/data/models/anime_dto.dart';
 import 'package:anime_discovery_app/data/repositories/anime_repo_impl.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -128,4 +128,192 @@ void main() {
       );
     });
   }); //group
+
+  group('searchAnime', () {
+    final tQuery = 'Naruto';
+    final tAnimeDto = AnimeDto(
+      id: '1',
+      attributes: AnimeAttributesDto(
+        canonicalTitle: 'Naruto',
+        posterImage: PosterImageDto(
+          original: 'https://example.com/naruto.jpg',
+          large: 'https://example.com/naruto_large.jpg',
+        ),
+        averageRating: '8.5',
+        synopsis: '',
+      ),
+      type: 'anime',
+    );
+
+    final tAnimeList = [tAnimeDto];
+
+    test(
+      'should return a list of Anime when call to data source is successful',
+      () async {
+        // arrange
+        when(
+          () => mockDataSource.searchAnime(
+            tQuery,
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async => tAnimeList);
+
+        // act
+        final result = await repository.searchAnime(tQuery);
+
+        // assert
+        expect(result, isA<Right<dynamic, List<Anime>>>());
+        result.fold((failure) => fail('Should return Right'), (animeList) {
+          expect(animeList.length, 1);
+          expect(animeList[0].canonicalTitle, 'Naruto');
+          expect(animeList[0].averageRating, 8.5);
+        });
+      },
+    );
+
+    test(
+      'should return a empty list of Anime when call to data source and no results are found',
+      () async {
+        // arrange
+        when(
+          () => mockDataSource.searchAnime(
+            tQuery,
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async => []);
+
+        // act
+        final result = await repository.searchAnime(tQuery);
+
+        // assert
+        expect(result, isA<Right<dynamic, List<Anime>>>());
+        result.fold(
+          (failure) => fail('Should return Right'),
+          (animeList) => expect(animeList.isEmpty, true),
+        );
+      },
+    );
+
+    test(
+      'should return a empty list of Anime when call to data source and CancelToken.cancel was triggered',
+      () async {
+        // arrange
+        final cancelToken = CancelToken();
+        cancelToken.cancel('user-cancelled');
+        when(
+          () => mockDataSource.searchAnime(
+            tQuery,
+            cancelToken: cancelToken,
+          ),
+        ).thenThrow(
+          DioException(
+            requestOptions: RequestOptions(path: '/anime'),
+            type: DioExceptionType.cancel,
+            message: 'Cancelled',
+          ),
+        );
+
+        // act
+        final result = await repository.searchAnime(
+          tQuery,
+          cancelToken: cancelToken,
+        );
+
+        // assert
+        expect(result, isA<Right<dynamic, List<Anime>>>());
+        result.fold(
+          (failure) => fail('Should return Right'),
+          (animeList) => expect(animeList.isEmpty, true),
+        );
+      },
+    );
+
+    test(
+      'should throw a NetworkFailure when data source throws',
+      () async {
+        // arrange
+        when(
+          () => mockDataSource.searchAnime(
+            tQuery,
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenThrow(
+          DioException(
+            requestOptions: RequestOptions(path: '/anime'),
+            type: DioExceptionType.connectionTimeout,
+            message: 'Network error',
+          ),
+        );
+
+        // act
+        final result = await repository.searchAnime(tQuery);
+
+        // assert
+        expect(result, isA<Left<dynamic, List<Anime>>>());
+        result.fold((failure) {
+          expect(failure, isA<NetworkFailure>());
+          expect(failure.message, 'Network error');
+        }, (animeList) => fail('Should return Left'));
+      },
+    );
+
+    test(
+      'should throw a ApiFailure when data source throws',
+      () async {
+        // arrange
+        when(
+          () => mockDataSource.searchAnime(
+            tQuery,
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenThrow(Exception('Unexpected error'));
+
+        // act
+        final result = await repository.searchAnime(tQuery);
+
+        // assert
+        expect(result, isA<Left<dynamic, List<Anime>>>());
+        result.fold((failure) {
+          expect(failure, isA<ApiFailure>());
+          expect(failure.message, contains('Unexpected error'));
+        }, (animeList) => fail('Should return Left'));
+      },
+    );
+
+    test(
+      'should map multiple DTOs correctly',
+      () async {
+        // arrange
+        final tMultipleDtos = [
+          tAnimeDto,
+          AnimeDto(
+            id: '2',
+            attributes: AnimeAttributesDto(
+              canonicalTitle: 'One Piece',
+              posterImage: PosterImageDto(original: 'url', large: 'url'),
+              averageRating: '9.0',
+              synopsis: '',
+            ),
+            type: 'anime',
+          ),
+        ];
+        when(
+          () => mockDataSource.searchAnime(
+            tQuery,
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async => tMultipleDtos);
+
+        // act
+        final result = await repository.searchAnime(tQuery);
+
+        // assert
+        result.fold((failure) => fail('Should return Right'), (animeList) {
+          expect(animeList.length, 2);
+          expect(animeList[1].canonicalTitle, 'One Piece');
+          expect(animeList[1].averageRating, 9.0);
+        });
+      },
+    );
+  });
 }
