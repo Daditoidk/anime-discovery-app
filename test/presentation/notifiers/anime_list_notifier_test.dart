@@ -4,8 +4,10 @@ import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:anime_discovery_app/domain/repositories/i_anime_repo.dart';
 import 'package:anime_discovery_app/presentation/notifiers/popular_anime_list_notifier.dart';
+import 'package:anime_discovery_app/presentation/notifiers/search_anime_notifier.dart';
 import 'package:anime_discovery_app/presentation/providers/anime_providers.dart';
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -20,12 +22,26 @@ class Listener<T> {
 
 class MockIAnimeRepository extends Mock implements IAnimeRepository {}
 
+ProviderContainer _createContainer(MockIAnimeRepository repository) {
+  return ProviderContainer.test(
+    overrides: [animeRepositoryProvider.overrideWithValue(repository)],
+    retry: (_, __) => null,
+  );
+}
+
+Future<void> _waitForDebounce() =>
+    Future<void>.delayed(const Duration(milliseconds: 350));
+
+Future<void> _waitShort() =>
+    Future<void>.delayed(const Duration(milliseconds: 100));
+
 void main() {
   late MockIAnimeRepository mockRepository;
 
   // Register fallback values for matchers
   setUpAll(() {
     registerFallbackValue(const AsyncLoading<List<Anime>>());
+    registerFallbackValue(CancelToken());
   });
 
   setUp(() {
@@ -270,5 +286,33 @@ void main() {
       expect(result[0].canonicalTitle, 'Naruto');
       expect(result[1].canonicalTitle, 'One Piece');
     });
+  });
+
+  group('searchAnime', () {
+    final tAnimeList = [
+      const Anime(
+        id: '1',
+        canonicalTitle: 'Naruto',
+        synopsis: 'Test synopsis',
+        posterImageUrl: 'url',
+        averageRating: 8.5,
+      ),
+    ];
+
+
+//TODO: complete the tests for searchAnimeListProvider  and seachQueryProvider
+    test('should return a list of Anime succefully', ()async {});
+    test('should return a Failure when repo returns Left', ()async {});
+    test('should do debouncing when seach method is call', ()async {});
+    test('should trigger cancelToken.cancel when user searches again', ()async {});
+    test('shouldnt call repo when the raw query contains only spaces', ()async {});
+    test('shouldnt call repo when the raw query now is the raw query + spaces', ()async {});
+    test('should call repo only once when raw query is same', ()async {});
+    test('should call repo only when user finish to type', ()async {});
+    test('should call repo only once with multiple fast user typings', ()async {});
+    test('should return empty list when repo returns empty', ()async {});
+    test('should show the correct state order when search method is call', ()async {});
+
+  
   });
 }
