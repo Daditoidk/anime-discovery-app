@@ -10,7 +10,7 @@ part 'anime_providers.g.dart';
 
 @Riverpod(keepAlive: true)
 Dio dio(Ref ref) {
-  final _dio = Dio(
+  final dio = Dio(
     BaseOptions(
       baseUrl: kKitsuAPI,
       connectTimeout: const Duration(seconds: 5),
@@ -19,11 +19,11 @@ Dio dio(Ref ref) {
   );
 
 if (kDebugMode) {
-    _dio.interceptors.add(
+    dio.interceptors.add(
       LogInterceptor(requestBody: true, responseBody: true),
     );
   }
-  return _dio;
+  return dio;
 }
 
 @Riverpod(keepAlive: true)

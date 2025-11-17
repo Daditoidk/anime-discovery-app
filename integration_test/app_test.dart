@@ -20,6 +20,60 @@ void main() {
     expect(find.byType(SliverList), findsOneWidget);
 
     expect(find.byType(AnimeTile), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('Search popular anime and display it', (tester) async {
+    app.main();
+
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    //API call delay to wait for data to load
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    expect(find.byType(SliverAppBar), findsOneWidget);
+
+    expect(find.byKey(const Key('popular-anime-search-input')), findsOneWidget);
+
+    await tester.enterText(
+      find.byKey(const Key('popular-anime-search-input')),
+      'Kimetsu',
+    );
+
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    expect(find.byType(SliverList), findsOneWidget);
+
+    expect(find.byType(AnimeTile), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('Search no popular anime and it shoudlnt display it', (
+    tester,
+  ) async {
+    app.main();
+
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    //API call delay to wait for data to load
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    expect(find.byType(SliverAppBar), findsOneWidget);
+
+    expect(find.byKey(const Key('popular-anime-search-input')), findsOneWidget);
+
+    await tester.enterText(
+      find.byKey(const Key('popular-anime-search-input')),
+      'Ranma 1/2',
+    );
+
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    expect(find.byType(SliverList), findsOneWidget);
+
+    expect(find.byType(AnimeTile), findsNothing);
 
   });
 }

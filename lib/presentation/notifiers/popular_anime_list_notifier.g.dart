@@ -33,7 +33,7 @@ final class PopularAnimeListProvider
   PopularAnimeList create() => PopularAnimeList();
 }
 
-String _$popularAnimeListHash() => r'de03ced9b5a4b795ebaf2739ce684605e61dc00b';
+String _$popularAnimeListHash() => r'32cafaa9497bb04199965bf93abd8ea2aae8e6de';
 
 abstract class _$PopularAnimeList extends $AsyncNotifier<List<Anime>> {
   FutureOr<List<Anime>> build();

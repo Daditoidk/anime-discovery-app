@@ -1,74 +1,155 @@
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:anime_discovery_app/presentation/notifiers/popular_anime_list_notifier.dart';
-import 'package:anime_discovery_app/presentation/providers/anime_providers.dart';
+import 'package:anime_discovery_app/presentation/notifiers/search_anime_notifier.dart';
 import 'package:anime_discovery_app/presentation/widgets/anime_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PopularAnimeListPage extends ConsumerWidget {
+class PopularAnimeListPage extends ConsumerStatefulWidget {
   const PopularAnimeListPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final listAsync = ref.watch(popularAnimeListProvider);
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PopularAnimeListPageState();
+}
+
+class _PopularAnimeListPageState extends ConsumerState<PopularAnimeListPage> {
+  late final TextEditingController searchController;
+
+  @override
+  void initState() {
+    searchController = TextEditingController(text: '');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final query = ref.watch(searchQueryProvider);
+
+    final state = query.isEmpty
+        ? ref.watch(popularAnimeListProvider)
+        : ref.watch(searchAnimeListProvider);
+
+    Future<void> onRefresh() async {
+      if (query.isEmpty) {
+        //popular anime list
+        ref.invalidate(popularAnimeListProvider);
+        await ref.read(popularAnimeListProvider.notifier).refresh();
+      } else {
+        //search anime list
+        ref.invalidate(searchAnimeListProvider);
+        ref.read(searchAnimeListProvider.notifier).search();
+      }
+    }
+
     return Scaffold(
       body: SafeArea(
-        child: listAsync.when(
-          data: (List<Anime> data) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                ref.invalidate(popularAnimeListProvider);
-                await ref.read(popularAnimeListProvider.notifier).refresh();
-              },
-              child: CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    floating: true,
-                    pinned: true,
-                    expandedHeight: 120,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    flexibleSpace: FlexibleSpaceBar(
-                      expandedTitleScale: 1.8,
-                      title: const Text('Popular Anime'),
-                      titlePadding: EdgeInsets.symmetric(vertical: 16),
-                      centerTitle: true,
+        child: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                floating: true,
+                expandedHeight: 150,
+                collapsedHeight: 140,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                flexibleSpace: FlexibleSpaceBar(
+                  expandedTitleScale: 1,
+                  collapseMode: CollapseMode.pin,
+                  title: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      children: [
+                        Text('Popular Anime', textAlign: TextAlign.center),
+                        SizedBox(height: 16),
+                        TextFormField(
+                          key: const Key('popular-anime-search-input'),
+                          controller: searchController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(width: 2),
+                              gapPadding: 16,
+                            ),
+                            contentPadding: EdgeInsets.only(bottom: 8),
+                            hintText: 'Search anime ...',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            suffix: IconButton(
+                              onPressed: () {
+                                searchController.text = '';
+                                ref.read(searchQueryProvider.notifier).clear();
+                              },
+                              icon: Icon(Icons.close),
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                ref
+                                    .read(searchQueryProvider.notifier)
+                                    .setQuery(searchController.text);
+                                ref
+                                    .read(searchAnimeListProvider.notifier)
+                                    .search();
+                              },
+                              icon: Icon(Icons.search),
+                            ),
+                          ),
+                          onChanged: (query) {
+                            ref
+                                .read(searchQueryProvider.notifier)
+                                .setQuery(query);
+                            ref.read(searchAnimeListProvider.notifier).search();
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final currentAnime = data[index];
-                      return AnimeTile(
-                        key: ValueKey('anime_tile_${currentAnime.id}'),
-                        anime: currentAnime,
-                      );
-                    }, childCount: data.length),
-                  ),
-                ],
+                  titlePadding: EdgeInsets.symmetric(vertical: 16),
+                  centerTitle: true,
+                ),
               ),
-            );
-          },
-          error: (failure, stackTrace) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error, size: 48, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text((failure as Failure).message ?? ''),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () =>
-                        ref.read(popularAnimeListProvider.notifier).refresh(),
-                    child: const Text('Retry'),
+
+              switch (state) {
+                AsyncLoading() => const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                AsyncError(:final error) => SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error, size: 48, color: Colors.red),
+                        const SizedBox(height: 16),
+                        Text((error as Failure).message ?? ''),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => onRefresh(),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            );
-          },
-          loading: () {
-            return Center(child: CircularProgressIndicator());
-          },
+                ),
+                AsyncData<List<Anime>>(:List<Anime> value) => SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final currentAnime = value[index];
+                    return AnimeTile(
+                      key: ValueKey('anime_tile_${currentAnime.id}'),
+                      anime: currentAnime,
+                    );
+                  }, childCount: value.length),
+                ),
+              },
+            ],
+          ),
         ),
       ),
     );
