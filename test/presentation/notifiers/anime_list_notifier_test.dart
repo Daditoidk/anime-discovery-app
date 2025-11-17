@@ -29,6 +29,16 @@ ProviderContainer _createContainer(MockIAnimeRepository repository) {
   );
 }
 
+ProviderContainer _createSearchContainer(MockIAnimeRepository repository) {
+  final container = _createContainer(repository);
+  container.listen<String>(
+    searchQueryProvider,
+    (_, __) {},
+    fireImmediately: true,
+  );
+  return container;
+}
+
 Future<void> _waitForDebounce() =>
     Future<void>.delayed(const Duration(milliseconds: 350));
 
@@ -65,10 +75,7 @@ void main() {
         () => mockRepository.getPopularAnime(),
       ).thenAnswer((_) async => Right(tAnimeList));
 
-      final container = ProviderContainer.test(
-        overrides: [animeRepositoryProvider.overrideWithValue(mockRepository)],
-        retry: (_, __) => null, // Disable automatic retry
-      );
+      final container = _createSearchContainer(mockRepository);
 
       final listener = Listener<AsyncValue<List<Anime>>>();
       container.listen(
@@ -289,6 +296,7 @@ void main() {
   });
 
   group('searchAnime', () {
+    final tQuery = 'Naruto';
     final tAnimeList = [
       const Anime(
         id: '1',
@@ -299,20 +307,418 @@ void main() {
       ),
     ];
 
+    test('should return a list of Anime succefully', () async {
+      when(
+        () => mockRepository.searchAnime(
+          any(),
+          cancelToken: any(named: 'cancelToken'),
+        ),
+      ).thenAnswer((_) async => Right(tAnimeList));
 
-//TODO: complete the tests for searchAnimeListProvider  and seachQueryProvider
-    test('should return a list of Anime succefully', ()async {});
-    test('should return a Failure when repo returns Left', ()async {});
-    test('should do debouncing when seach method is call', ()async {});
-    test('should trigger cancelToken.cancel when user searches again', ()async {});
-    test('shouldnt call repo when the raw query contains only spaces', ()async {});
-    test('shouldnt call repo when the raw query now is the raw query + spaces', ()async {});
-    test('should call repo only once when raw query is same', ()async {});
-    test('should call repo only when user finish to type', ()async {});
-    test('should call repo only once with multiple fast user typings', ()async {});
-    test('should return empty list when repo returns empty', ()async {});
-    test('should show the correct state order when search method is call', ()async {});
+      final container = _createSearchContainer(mockRepository);
+      final listener = Listener<AsyncValue<List<Anime>>>();
+      container.listen(
+        searchAnimeListProvider,
+        listener.call,
+        fireImmediately: true,
+      );
 
-  
+      container.read(searchQueryProvider.notifier).setQuery(tQuery);
+      container.read(searchAnimeListProvider.notifier).search();
+
+      await _waitForDebounce();
+
+      expect(listener.states.length, 3);
+      expect(listener.states[0].value, isEmpty);
+      expect(listener.states[1], isA<AsyncLoading<List<Anime>>>());
+      expect(listener.states[2].value, tAnimeList);
+
+      verify(
+        () => mockRepository.searchAnime(
+          tQuery,
+          cancelToken: any(named: 'cancelToken'),
+        ),
+      ).called(1);
+    });
+
+    test('should return a Failure when repo returns Left', () async {
+      final failure = ApiFailure(message: 'search failed');
+      when(
+        () => mockRepository.searchAnime(
+          any(),
+          cancelToken: any(named: 'cancelToken'),
+        ),
+      ).thenAnswer((_) async => Left(failure));
+
+      final container = _createSearchContainer(mockRepository);
+      final listener = Listener<AsyncValue<List<Anime>>>();
+      container.listen(
+        searchAnimeListProvider,
+        listener.call,
+        fireImmediately: true,
+      );
+
+      container.read(searchQueryProvider.notifier).setQuery(tQuery);
+      container.read(searchAnimeListProvider.notifier).search();
+
+      await _waitForDebounce();
+
+      expect(listener.states.length, 3);
+      expect(listener.states[1], isA<AsyncLoading<List<Anime>>>());
+      expect(listener.states[2], isA<AsyncError<List<Anime>>>());
+      expect(listener.states[2].error, failure);
+    });
+
+    test('should do debouncing when seach method is call', () async {
+      when(
+        () => mockRepository.searchAnime(
+          any(),
+          cancelToken: any(named: 'cancelToken'),
+        ),
+      ).thenAnswer((_) async => Right(tAnimeList));
+
+      final container = _createSearchContainer(mockRepository);
+      final listener = Listener<AsyncValue<List<Anime>>>();
+      container.listen(
+        searchAnimeListProvider,
+        listener.call,
+        fireImmediately: true,
+      );
+
+      container.read(searchQueryProvider.notifier).setQuery(tQuery);
+      container.read(searchAnimeListProvider.notifier).search();
+
+      await _waitShort();
+      expect(listener.states.length, 1);
+      verifyNever(
+        () => mockRepository.searchAnime(
+          any(),
+          cancelToken: any(named: 'cancelToken'),
+        ),
+      );
+
+      await _waitForDebounce();
+
+      expect(listener.states.length, 3);
+      expect(listener.states[1], isA<AsyncLoading<List<Anime>>>());
+      expect(listener.states[2].value, tAnimeList);
+
+      verify(
+        () => mockRepository.searchAnime(
+          tQuery,
+          cancelToken: any(named: 'cancelToken'),
+        ),
+      ).called(1);
+    });
+
+    test(
+      'should trigger cancelToken.cancel when user searches again',
+      () async {
+        final firstCallCompleter = Completer<Either<Failure, List<Anime>>>();
+        when(
+          () => mockRepository.searchAnime(
+            any(),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((invocation) {
+          if (!firstCallCompleter.isCompleted) {
+            return firstCallCompleter.future;
+          }
+          return Future.value(Right(tAnimeList));
+        });
+
+        final container = _createSearchContainer(mockRepository);
+        final listener = Listener<AsyncValue<List<Anime>>>();
+        container.listen(
+          searchAnimeListProvider,
+          listener.call,
+          fireImmediately: true,
+        );
+        final notifier = container.read(searchAnimeListProvider.notifier);
+        final queryNotifier = container.read(searchQueryProvider.notifier);
+
+        queryNotifier.setQuery('Naruto');
+        notifier.search();
+        await _waitForDebounce();
+
+        final firstToken = notifier.cancelToken;
+        expect(firstToken, isNotNull);
+        expect(firstToken!.isCancelled, isFalse);
+
+        queryNotifier.setQuery('Bleach');
+        notifier.search();
+
+        expect(firstToken.isCancelled, isTrue);
+
+        firstCallCompleter.complete(Right(tAnimeList));
+
+        await _waitForDebounce();
+
+        expect(
+          listener.states.whereType<AsyncLoading<List<Anime>>>().length,
+          2,
+        );
+        expect(listener.states.last.value, tAnimeList);
+
+        verify(
+          () => mockRepository.searchAnime(
+            any(),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).called(2);
+      },
+    );
+
+    test(
+      'shouldnt call repo when the raw query contains only spaces',
+      () async {
+        final container = _createSearchContainer(mockRepository);
+        final listener = Listener<AsyncValue<List<Anime>>>();
+        container.listen(
+          searchAnimeListProvider,
+          listener.call,
+          fireImmediately: true,
+        );
+
+        container.read(searchQueryProvider.notifier).setQuery('   ');
+        container.read(searchAnimeListProvider.notifier).search();
+
+        await _waitForDebounce();
+
+        verifyNever(
+          () => mockRepository.searchAnime(
+            any(),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        );
+        expect(
+          listener.states.whereType<AsyncLoading<List<Anime>>>().length,
+          0,
+        );
+        expect(listener.states.last.value, isEmpty);
+      },
+    );
+
+    test(
+      'shouldnt call repo when the raw query now is the raw query + spaces',
+      () async {
+        var callCount = 0;
+        when(
+          () => mockRepository.searchAnime(
+            any(),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async {
+          callCount++;
+          return Right(tAnimeList);
+        });
+
+        final container = _createSearchContainer(mockRepository);
+        final listener = Listener<AsyncValue<List<Anime>>>();
+        container.listen(
+          searchAnimeListProvider,
+          listener.call,
+          fireImmediately: true,
+        );
+        final queryNotifier = container.read(searchQueryProvider.notifier);
+        final notifier = container.read(searchAnimeListProvider.notifier);
+
+        queryNotifier.setQuery('Naruto');
+        notifier.search();
+        await _waitForDebounce();
+
+        queryNotifier.setQuery('Naruto   ');
+        notifier.search();
+        await _waitForDebounce();
+
+        expect(callCount, 1);
+        expect(listener.states.length, 3);
+        expect(listener.states.last.value, tAnimeList);
+      },
+    );
+
+    test('should call repo only once when raw query is same', () async {
+      var callCount = 0;
+      when(
+        () => mockRepository.searchAnime(
+          any(),
+          cancelToken: any(named: 'cancelToken'),
+        ),
+      ).thenAnswer((_) async {
+        callCount++;
+        return Right(tAnimeList);
+      });
+
+      final container = _createSearchContainer(mockRepository);
+      final listener = Listener<AsyncValue<List<Anime>>>();
+      container.listen(
+        searchAnimeListProvider,
+        listener.call,
+        fireImmediately: true,
+      );
+      final notifier = container.read(searchAnimeListProvider.notifier);
+
+      container.read(searchQueryProvider.notifier).setQuery(tQuery);
+      notifier.search();
+      await _waitForDebounce();
+
+      notifier.search();
+      await _waitForDebounce();
+
+      expect(callCount, 1);
+      expect(listener.states.length, 3);
+      expect(listener.states.last.value, tAnimeList);
+    });
+
+    test('should call repo only when user finish to type', () async {
+      when(
+        () => mockRepository.searchAnime(
+          any(),
+          cancelToken: any(named: 'cancelToken'),
+        ),
+      ).thenAnswer((_) async => Right(tAnimeList));
+
+      final container = _createSearchContainer(mockRepository);
+      final listener = Listener<AsyncValue<List<Anime>>>();
+      container.listen(
+        searchAnimeListProvider,
+        listener.call,
+        fireImmediately: true,
+      );
+      final notifier = container.read(searchAnimeListProvider.notifier);
+
+      container.read(searchQueryProvider.notifier).setQuery(tQuery);
+      notifier.search();
+
+      await _waitShort();
+      expect(listener.states.length, 1);
+
+      await _waitForDebounce();
+
+      expect(listener.states.length, 3);
+      expect(listener.states[1], isA<AsyncLoading<List<Anime>>>());
+      expect(listener.states[2].value, tAnimeList);
+    });
+
+    test(
+      'should call repo only once with multiple fast user typings',
+      () async {
+        when(
+          () => mockRepository.searchAnime(
+            any(),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async => Right(tAnimeList));
+
+        final container = _createSearchContainer(mockRepository);
+        final listener = Listener<AsyncValue<List<Anime>>>();
+        container.listen(
+          searchAnimeListProvider,
+          listener.call,
+          fireImmediately: true,
+        );
+        final notifier = container.read(searchAnimeListProvider.notifier);
+        final queryNotifier = container.read(searchQueryProvider.notifier);
+
+        queryNotifier.setQuery('N');
+        notifier.search();
+        await _waitShort();
+
+        queryNotifier.setQuery('Na');
+        notifier.search();
+        await _waitShort();
+
+        queryNotifier.setQuery('Naruto');
+        notifier.search();
+        await _waitForDebounce();
+
+        verify(
+          () => mockRepository.searchAnime(
+            'Naruto',
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).called(1);
+        expect(listener.states.length, 3);
+        expect(listener.states[2].value, tAnimeList);
+      },
+    );
+
+    test('should return empty list when repo returns empty', () async {
+      when(
+        () => mockRepository.searchAnime(
+          any(),
+          cancelToken: any(named: 'cancelToken'),
+        ),
+      ).thenAnswer((_) async => const Right(<Anime>[]));
+
+      final container = _createSearchContainer(mockRepository);
+      final listener = Listener<AsyncValue<List<Anime>>>();
+      container.listen(
+        searchAnimeListProvider,
+        listener.call,
+        fireImmediately: true,
+      );
+
+      container.read(searchQueryProvider.notifier).setQuery('Unknown');
+      container.read(searchAnimeListProvider.notifier).search();
+
+      await _waitForDebounce();
+
+      expect(listener.states.length, 3);
+      expect(listener.states.last.value, isEmpty);
+    });
+
+    test(
+      'should show the correct state order when search method is call',
+      () async {
+        when(
+          () => mockRepository.searchAnime(
+            any(),
+            cancelToken: any(named: 'cancelToken'),
+          ),
+        ).thenAnswer((_) async => Right(tAnimeList));
+
+        final container = _createSearchContainer(mockRepository);
+        final listener = Listener<AsyncValue<List<Anime>>>();
+        container.listen(
+          searchAnimeListProvider,
+          listener.call,
+          fireImmediately: true,
+        );
+
+        container.read(searchQueryProvider.notifier).setQuery(tQuery);
+        container.read(searchAnimeListProvider.notifier).search();
+
+        await _waitForDebounce();
+
+        expect(listener.states.length, 3);
+        expect(listener.states[0].value, isEmpty);
+        expect(listener.states[1], isA<AsyncLoading<List<Anime>>>());
+        expect(listener.states[2].value, tAnimeList);
+      },
+    );
+  });
+
+  group('searchQueryProvider', () {
+    test('setQuery should trim and update only when value changes', () {
+      final container = _createContainer(mockRepository);
+      final notifier = container.read(searchQueryProvider.notifier);
+
+      notifier.setQuery('  Naruto  ');
+      expect(container.read(searchQueryProvider), 'Naruto');
+
+      notifier.setQuery('Naruto  ');
+      expect(container.read(searchQueryProvider), 'Naruto');
+    });
+
+    test('clear should reset the query', () {
+      final container = _createContainer(mockRepository);
+      final notifier = container.read(searchQueryProvider.notifier);
+
+      notifier.setQuery('Bleach');
+      notifier.clear();
+
+      expect(container.read(searchQueryProvider), '');
+    });
   });
 }
