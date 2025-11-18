@@ -5,8 +5,12 @@ import 'package:dio/dio.dart';
 
 abstract class IAnimeRepository {
 
-  Future<Either<Failure, List<Anime>>> getPopularAnime();
-  Future<Either<Failure, List<Anime>>> searchAnime(String query, {CancelToken? cancelToken});
+  Future<Either<Failure, List<Anime>>> getPopularAnime({ int? offset});
+  Future<Either<Failure, List<Anime>>> searchAnime(
+    String query, {
+    CancelToken? cancelToken,
+    int? offset,
+  });
 
 
 }

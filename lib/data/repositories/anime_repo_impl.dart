@@ -12,9 +12,9 @@ class AnimeRepositoryImpl implements IAnimeRepository {
   AnimeRepositoryImpl(this.api);
 
   @override
-  Future<Either<Failure, List<Anime>>> getPopularAnime() async {
+  Future<Either<Failure, List<Anime>>> getPopularAnime({int? offset}) async {
     try {
-      final popularAnimeDtos = await api.getPopularAnime();
+      final popularAnimeDtos = await api.getPopularAnime(offset: offset);
 
       final popularAnimeEntities = popularAnimeDtos
           .map((dto) => dto.toEntity())
@@ -32,9 +32,14 @@ class AnimeRepositoryImpl implements IAnimeRepository {
   Future<Either<Failure, List<Anime>>> searchAnime(
     String query, {
     CancelToken? cancelToken,
+    int? offset,
   }) async {
     try {
-      final dtos = await api.searchAnime(query, cancelToken: cancelToken);
+      final dtos = await api.searchAnime(
+        query,
+        cancelToken: cancelToken,
+        offset: offset,
+      );
 
       final searchedAnimeListEntity = dtos
           .map((dto) => dto.toEntity())

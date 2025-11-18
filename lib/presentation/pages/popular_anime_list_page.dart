@@ -16,17 +16,56 @@ class PopularAnimeListPage extends ConsumerStatefulWidget {
 
 class _PopularAnimeListPageState extends ConsumerState<PopularAnimeListPage> {
   late final TextEditingController searchController;
+  late final ScrollController scrollController;
 
   @override
   void initState() {
     searchController = TextEditingController(text: '');
+    scrollController = ScrollController(
+      debugLabel: 'AnimeListScrollController',
+    );
+    scrollController.addListener(() {
+      if (_nearBottom) callLoadMore();
+    });
     super.initState();
+  }
+
+  bool get _nearBottom {
+    if (!scrollController.hasClients) return false;
+    final maxScroll = scrollController.position.maxScrollExtent;
+    final currentScrollOffset = scrollController.offset;
+    return currentScrollOffset >= (maxScroll * 0.9);
   }
 
   @override
   void dispose() {
+    scrollController.dispose();
     searchController.dispose();
     super.dispose();
+  }
+
+  void callLoadMore() async {
+    final query = ref.watch(searchQueryProvider);
+
+    if (query.isEmpty) {
+      //popular anime list
+      await ref.read(popularAnimeListProvider.notifier).loadMore();
+    } else {
+      //search anime list
+      await ref.read(searchAnimeListProvider.notifier).loadMore();
+    }
+  }
+
+  Future<void> onRefresh() async {
+    final query = ref.watch(searchQueryProvider);
+    if (query.isEmpty) {
+      //popular anime list
+      ref.invalidate(popularAnimeListProvider);
+      await ref.read(popularAnimeListProvider.notifier).refresh();
+    } else {
+      //search anime list
+      ref.read(searchAnimeListProvider.notifier).refresh();
+    }
   }
 
   @override
@@ -37,23 +76,12 @@ class _PopularAnimeListPageState extends ConsumerState<PopularAnimeListPage> {
         ? ref.watch(popularAnimeListProvider)
         : ref.watch(searchAnimeListProvider);
 
-    Future<void> onRefresh() async {
-      if (query.isEmpty) {
-        //popular anime list
-        ref.invalidate(popularAnimeListProvider);
-        await ref.read(popularAnimeListProvider.notifier).refresh();
-      } else {
-        //search anime list
-        ref.invalidate(searchAnimeListProvider);
-        ref.read(searchAnimeListProvider.notifier).search();
-      }
-    }
-
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: onRefresh,
           child: CustomScrollView(
+            controller: scrollController,
             slivers: [
               SliverAppBar(
                 floating: true,

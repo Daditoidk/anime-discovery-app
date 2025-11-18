@@ -3,11 +3,12 @@ import 'package:anime_discovery_app/data/models/anime_dto.dart';
 import 'package:dio/dio.dart';
 
 abstract class IKitsuAPIRemoteDataSource {
-  Future<List<AnimeDto>> getPopularAnime();
+  Future<List<AnimeDto>> getPopularAnime({int? offset});
   Future<List<AnimeDto>> searchAnime(
-    String query,
-    {CancelToken? cancelToken}
-  );
+    String query, {
+    CancelToken? cancelToken,
+    int? offset,
+  });
 }
 
 class KitsuAPIRemoteDataSourceImpl implements IKitsuAPIRemoteDataSource {
@@ -15,12 +16,26 @@ class KitsuAPIRemoteDataSourceImpl implements IKitsuAPIRemoteDataSource {
 
   KitsuAPIRemoteDataSourceImpl(this.dio);
 
+  var paginationParameters = <String, String>{};
+
+  void addPaginationParams(int? offset, Map<String, String> queryParameters) {
+    if (offset == null) return;
+    paginationParameters = {
+      'page[limit]': '$kLimitPagination',
+      'page[offset]': offset.toString(),
+    };
+    queryParameters.addAll(paginationParameters);
+  }
+
   @override
-  Future<List<AnimeDto>> getPopularAnime() async {
+  Future<List<AnimeDto>> getPopularAnime({int? offset}) async {
+    final queryParameters = {'sort': '-user_count'};
+    addPaginationParams(offset, queryParameters);
+    
     try {
       final response = await dio.get(
         kPopularAnimeEndpoint,
-        queryParameters: {'sort': '-user_count'},
+        queryParameters: queryParameters,
       );
 
       final List<dynamic> data = response.data['data'];
@@ -39,24 +54,25 @@ class KitsuAPIRemoteDataSourceImpl implements IKitsuAPIRemoteDataSource {
 
   @override
   Future<List<AnimeDto>> searchAnime(
-    String query,
-    {
+    String query, {
     CancelToken? cancelToken,
-  }
-  ) async {
+    int? offset,
+  }) async {
+    final queryParameters = {'filter[text]': query, 'sort': '-user_count'};
+    addPaginationParams(offset, queryParameters);
+
     try {
       final response = await dio.get(
         kPopularAnimeEndpoint,
         cancelToken: cancelToken,
-        queryParameters: {'filter[text]': query},
+        queryParameters: queryParameters,
       );
 
       final List<dynamic> data = response.data['data'];
 
       return data.map((json) => AnimeDto.fromJson(json)).toList();
-
     } on DioException {
-        rethrow;
+      rethrow;
     } catch (e) {
       throw Exception('Failed to searching popular anime: $e');
     }

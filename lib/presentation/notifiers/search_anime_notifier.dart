@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:anime_discovery_app/core/constants/const.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:anime_discovery_app/presentation/providers/anime_providers.dart';
 import 'package:dio/dio.dart';
@@ -25,54 +26,138 @@ class SearchQuery extends _$SearchQuery {
 
 @riverpod
 class SearchAnimeList extends _$SearchAnimeList {
-  String lastquery = '';
-  CancelToken? cancelToken;
-  Timer? debounceTimer;
+  String _lastquery = '';
+  CancelToken? _cancelToken;
+  Timer? _debounceTimer;
+  bool _hasMore = true;
+  bool _isLoadingMore = false;
+  int _offset = 0;
 
   @override
   FutureOr<List<Anime>> build() {
     ref.onDispose(() {
-      debounceTimer?.cancel();
-      cancelToken?.cancel("new search");
+      _debounceTimer?.cancel();
+      _cancelToken?.cancel("disposed");
     });
-    return <Anime>[];
+    return const <Anime>[];
   }
 
   void search() {
+
     final String normalizedQuery = ref.read(searchQueryProvider);
 
-    cancelToken?.cancel("New search");
-    debounceTimer?.cancel();
+    // Cancel previous operations
+    _cancelToken?.cancel("New search");
+    _debounceTimer?.cancel();
 
+    // Handle empty query
     if (normalizedQuery.isEmpty) {
-      lastquery = '';
+      _resetState();
       state = const AsyncData([]);
       return;
     }
 
-    if (normalizedQuery == lastquery) return;
+    // Skip if same query
+    if (normalizedQuery == _lastquery) return;
 
-    lastquery = normalizedQuery;
+    // New search - reset everything
+    _lastquery = normalizedQuery;
+    _offset = 0; // ✅ Reset offset
+    _hasMore = true; // ✅ Reset hasMore
+    _isLoadingMore = false;
 
-    debounceTimer = Timer(const Duration(milliseconds: 300), () {
-      _performSearch(normalizedQuery);
+    state = const AsyncLoading();
+
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      _performSearch(
+        normalizedQuery,
+        isNewSearch: true,
+      ); // ✅ Flag as new search
     });
   }
 
-  Future<void> _performSearch(String query) async {
-    state = AsyncLoading();
+  void refresh() {
+    _resetState();
 
-    cancelToken = CancelToken();
+    final String normalizedQuery = ref.read(searchQueryProvider);
+    if (normalizedQuery.isEmpty) {
+      state = const AsyncData([]);
+      return;
+    }
+
+    state = const AsyncLoading();
+    _performSearch(normalizedQuery, isNewSearch: true);
+  }
+
+  Future<void> loadMore() async {
+    if (!_hasMore || _isLoadingMore) return;
+
+    final String normalizedQuery = ref.read(searchQueryProvider);
+    if (normalizedQuery.isEmpty) {
+      _resetState();
+      state = const AsyncData([]);
+      return;
+    }
+
+    _isLoadingMore = true;
+    _offset += kOffsetPaginationIncreasingRatio;
+
+    await _performSearch(
+      normalizedQuery,
+      isNewSearch: false,
+    ); // ✅ Not a new search
+
+    _isLoadingMore = false;
+  }
+
+  Future<void> _performSearch(String query, {required bool isNewSearch}) async {
+    
+    if (!_hasMore && !isNewSearch) {
+      return; // Only check hasMore if not new search
+    }
+
+    _cancelToken = CancelToken();
 
     final response = await ref
-        .watch(animeRepositoryProvider)
-        .searchAnime(query, cancelToken: cancelToken);
+        .read(animeRepositoryProvider)
+        .searchAnime(query, cancelToken: _cancelToken, offset: _offset);
 
-    if (!ref.mounted) return;
+    if (!ref.mounted) {
+      state = const AsyncData([]);
+      return;
+    }
 
-    state = response.fold(
-      (failure) => AsyncError(failure, StackTrace.current),
-      (searchedAnimeList) => AsyncData(searchedAnimeList),
+    final List<Anime> newAnimeList = response.fold(
+      (failure) => throw failure,
+      (searchedAnimeList) => searchedAnimeList,
     );
+
+    _checkIfHasMore(newAnimeList);
+
+    // ✅ CRITICAL: Replace on new search, append on loadMore
+    if (isNewSearch) {
+      state = AsyncData(newAnimeList); // Replace
+    } else {
+      state = AsyncData([...state.value ?? [], ...newAnimeList]); // Append
+    }
   }
+
+  void _checkIfHasMore(List<Anime> animeList) {
+    if (animeList.length < kLimitPagination) {
+      _hasMore = false;
+    }
+  }
+
+  void _resetState() {
+    _lastquery = '';
+    _offset = 0;
+    _hasMore = true;
+    _isLoadingMore = false;
+    _cancelToken?.cancel("reset");
+  }
+
+  // Getters for UI (optional, but helpful for debugging)
+  bool get hasMore => _hasMore;
+  bool get isLoadingMore => _isLoadingMore;
+  CancelToken? get cancelToken => _cancelToken;
 }
