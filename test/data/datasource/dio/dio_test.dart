@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:anime_discovery_app/core/constants/const.dart';
+import 'package:anime_discovery_app/core/enums/category_filter.dart';
 import 'package:anime_discovery_app/data/datasources/kitsu_anime_remote_datasource.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -237,10 +238,7 @@ void main() {
       verify(
         () => mockDio.get(
           '/anime',
-          queryParameters: {
-            'filter[text]': tQuery,
-            'sort': '-user_count',
-          },
+          queryParameters: {'filter[text]': tQuery, 'sort': '-user_count'},
         ),
       ).called(1);
     });
@@ -329,10 +327,7 @@ void main() {
         verify(
           () => mockDio.get(
             '/anime',
-            queryParameters: {
-              'filter[text]': tQuery,
-              'sort': '-user_count',
-            },
+            queryParameters: {'filter[text]': tQuery, 'sort': '-user_count'},
           ),
         ).called(1);
       },
@@ -365,8 +360,10 @@ void main() {
       () async {
         // arrange
         when(
-          () =>
-              mockDio.get(any(), queryParameters: any(named: 'queryParameters')),
+          () => mockDio.get(
+            any(),
+            queryParameters: any(named: 'queryParameters'),
+          ),
         ).thenAnswer(
           (_) async => Response(
             data: tResponseData,
@@ -398,8 +395,9 @@ void main() {
 
     test('should return list animeDTOs when request is succeful', () async {
       // arrange
-      final baseData =
-          List<Map<String, dynamic>>.from(tResponseData['data'] as List);
+      final baseData = List<Map<String, dynamic>>.from(
+        tResponseData['data'] as List,
+      );
       final tMultipleResponse = {
         'data': [
           ...baseData,
@@ -503,8 +501,9 @@ void main() {
     });
     test('should skip the object if type is not anime', () async {
       // arrange
-      final baseData =
-          List<Map<String, dynamic>>.from(tResponseData['data'] as List);
+      final baseData = List<Map<String, dynamic>>.from(
+        tResponseData['data'] as List,
+      );
       final tMixedResponse = {
         'data': [
           ...baseData,
@@ -664,10 +663,7 @@ void main() {
 
       // assert
       verify(
-        () => mockDio.get(
-          '/anime',
-          queryParameters: {'sort': '-user_count'},
-        ),
+        () => mockDio.get('/anime', queryParameters: {'sort': '-user_count'}),
       ).called(1);
     });
   });
@@ -702,18 +698,16 @@ void main() {
           queryParameters: any(named: 'queryParameters'),
           cancelToken: any(named: 'cancelToken'),
         ),
-      ).thenAnswer(
-        (invocation) async {
-          receivedQueryParameters = Map<String, dynamic>.from(
-            invocation.namedArguments[#queryParameters] as Map,
-          );
-          return Response(
-            data: tResponseData,
-            statusCode: 200,
-            requestOptions: RequestOptions(path: '/anime'),
-          );
-        },
-      );
+      ).thenAnswer((invocation) async {
+        receivedQueryParameters = Map<String, dynamic>.from(
+          invocation.namedArguments[#queryParameters] as Map,
+        );
+        return Response(
+          data: tResponseData,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/anime'),
+        );
+      });
 
       // act
       await dataSource.searchAnime(
@@ -725,10 +719,7 @@ void main() {
       expect(receivedQueryParameters, isNotNull);
       expect(receivedQueryParameters!['filter[text]'], tQuery);
       expect(receivedQueryParameters!['sort'], '-user_count');
-      expect(
-        receivedQueryParameters!['page[limit]'],
-        '$tLimitPagination',
-      );
+      expect(receivedQueryParameters!['page[limit]'], '$tLimitPagination');
       expect(
         receivedQueryParameters!['page[offset]'],
         '$tOffsetPaginationIncreasingRatio',
@@ -917,10 +908,7 @@ void main() {
 
       // act & assert
       expect(
-        () => dataSource.searchAnime(
-          tQuery,
-          offset: negativeOffset,
-        ),
+        () => dataSource.searchAnime(tQuery, offset: negativeOffset),
         throwsA(isA<DioException>()),
       );
     });
@@ -969,31 +957,26 @@ void main() {
           queryParameters: any(named: 'queryParameters'),
           cancelToken: any(named: 'cancelToken'),
         ),
-      ).thenAnswer(
-        (invocation) async {
-          receivedQueryParameters = Map<String, dynamic>.from(
-            invocation.namedArguments[#queryParameters] as Map,
-          );
-          return Response(
-            data: tResponseData,
-            statusCode: 200,
-            requestOptions: RequestOptions(path: '/anime'),
-          );
-        },
-      );
+      ).thenAnswer((invocation) async {
+        receivedQueryParameters = Map<String, dynamic>.from(
+          invocation.namedArguments[#queryParameters] as Map,
+        );
+        return Response(
+          data: tResponseData,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/anime'),
+        );
+      });
 
       // act
       await dataSource.searchAnime(tQuery);
 
       // assert
       expect(receivedQueryParameters, isNotNull);
-      expect(
-        receivedQueryParameters,
-        {
-          'filter[text]': tQuery,
-          'sort': '-user_count',
-        },
-      );
+      expect(receivedQueryParameters, {
+        'filter[text]': tQuery,
+        'sort': '-user_count',
+      });
       verify(
         () => mockDio.get(
           '/anime',
@@ -1001,6 +984,96 @@ void main() {
           cancelToken: any(named: 'cancelToken'),
         ),
       ).called(1);
+    });
+  });
+  group('category filters', () {
+    final tResponseData = {
+      'data': [
+        {
+          'id': '1',
+          'type': 'anime',
+          'attributes': {
+            'synopsis': '',
+            'canonicalTitle': 'Naruto',
+            'posterImage': {
+              'original': 'https://example.com/naruto.jpg',
+              'large': 'https://example.com/naruto_large.jpg',
+            },
+            'averageRating': '8.5',
+          },
+        },
+      ],
+    };
+
+    test('get filtered list with the correct parameters', () async {
+      // arrange
+      const categoryFilter = CategoryFilters.action;
+      Map<String, dynamic>? receivedQueryParameters;
+      when(
+        () => mockDio.get(
+          any(),
+          queryParameters: any(named: 'queryParameters'),
+        ),
+      ).thenAnswer((invocation) async {
+        receivedQueryParameters = Map<String, dynamic>.from(
+          invocation.namedArguments[#queryParameters] as Map,
+        );
+        return Response(
+          data: tResponseData,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/anime'),
+        );
+      });
+
+      // act
+      final result = await dataSource.getPopularAnime(
+        categoryFilter: categoryFilter,
+      );
+
+      // assert
+      expect(result, hasLength(1));
+      expect(receivedQueryParameters, isNotNull);
+      expect(receivedQueryParameters!['sort'], '-user_count');
+      expect(
+        receivedQueryParameters!['filter[categories]'],
+        categoryFilter.name,
+      );
+      verify(
+        () => mockDio.get(
+          '/anime',
+          queryParameters: {
+            'sort': '-user_count',
+            'filter[categories]': categoryFilter.name,
+          },
+        ),
+      ).called(1);
+    });
+
+    test('should throw get incorrect parameters', () async {
+      // arrange
+      const categoryFilter = CategoryFilters.action;
+      when(
+        () => mockDio.get(
+          any(),
+          queryParameters: any(named: 'queryParameters'),
+        ),
+      ).thenThrow(
+        DioException(
+          type: DioExceptionType.badResponse,
+          requestOptions: RequestOptions(path: '/anime'),
+          response: Response(
+            data: null,
+            statusCode: 400,
+            requestOptions: RequestOptions(path: '/anime'),
+          ),
+        ),
+      );
+
+      // act & assert
+      expect(
+        () => dataSource.getPopularAnime(categoryFilter: categoryFilter),
+        throwsA(isA<DioException>()),
+      );
     });
   });
 }

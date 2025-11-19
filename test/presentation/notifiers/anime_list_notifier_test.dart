@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:anime_discovery_app/core/constants/const.dart';
+import 'package:anime_discovery_app/core/enums/category_filter.dart';
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:anime_discovery_app/domain/repositories/i_anime_repo.dart';
@@ -581,7 +582,6 @@ void main() {
 
         await _waitForDebounce();
 
-
         expect(
           listener.states.whereType<AsyncLoading<List<Anime>>>().length,
           1,
@@ -834,5 +834,66 @@ void main() {
         expect(listener.states[2].value, tAnimeList);
       },
     );
+  });
+
+  group('category filter', () {
+    final tAnimeList = List.generate(kLimitPagination, (index) {
+      final id = index.toString();
+      final title = 'Title $id';
+      return Anime(
+        id: id,
+        canonicalTitle: title,
+        synopsis: 'Test synopsis',
+        posterImageUrl: 'url',
+        averageRating: 8.5,
+      );
+    });
+    test('list rebuilds when category changes', () async {
+      // Mock returns any anime
+      final actionAnime = [
+        const Anime(id: '1', canonicalTitle: 'Some Action Anime', synopsis: ''),
+      ];
+      when(
+        () => mockRepository.getPopularAnime(
+          offset: any(named: 'offset'),
+          categoryFilter: any(named: 'categoryFilter'),
+        ),
+      ).thenAnswer((invocation) async {
+        final category = invocation.namedArguments[#categoryFilter];
+
+        if (category == null) {
+          return Right(tAnimeList);
+        } else {
+          return Right(actionAnime);
+        }
+      });
+
+      final container = _createContainer(mockRepository);
+      final listener = Listener<AsyncValue<List<Anime>>>();
+      container.listen(
+        popularAnimeListProvider,
+        listener.call,
+        fireImmediately: true,
+      );
+
+      await container.read(popularAnimeListProvider.future);
+
+      expect(listener.states.length, 2);
+      // Change filter
+      container
+          .read(popularAnimeListProvider.notifier)
+          .filterByCategory(CategoryFilters.action);
+
+      // Verify the API was called with correct category
+      verify(
+        () => mockRepository.getPopularAnime(
+          offset: any(named: 'offset'),
+          categoryFilter: CategoryFilters.action,
+        ),
+      ).called(1);
+
+      // Trust that the server filtered correctly
+      // No need to verify the anime actually has that category
+    });
   });
 }
