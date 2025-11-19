@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:anime_discovery_app/main.dart' as app;
+import 'package:mocktail/mocktail.dart';
 
 Future<void> enterSearchQuery(WidgetTester tester, String query) async {
   final searchField = find.byKey(const Key('popular-anime-search-input'));
@@ -104,5 +105,45 @@ void main() {
 
     // Verify MORE items are now rendered
     expect(count, greaterThan(initialCount));
+  });
+
+  Future<void> _waitTillLoadAnimeList(WidgetTester tester) async {
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    //API call delay to wait for data to load
+    await waitForFinder(tester, find.byType(SliverList));
+
+    expect(find.byType(SliverList), findsOneWidget);
+
+    expect(find.byType(AnimeTile), findsAtLeastNWidgets(1));
+  }
+
+  testWidgets('category filter should filter correctly', (tester) async {
+    app.main();
+
+    await _waitTillLoadAnimeList(tester);
+
+    final firstItem =
+        tester.widgetList(find.byType(AnimeTile)).first as AnimeTile;
+
+    expect(find.byType(FilterChip), findsNWidgets(6));
+
+    await tester.tap(find.byType(FilterChip).last);
+
+    waitForFinder(tester, find.byType(SliverList));
+
+    expect(find.byType(SliverList), findsOneWidget);
+
+    expect(find.byType(AnimeTile), findsAtLeastNWidgets(1));
+
+    final filteredFirstItem =
+        tester.widgetList(find.byType(AnimeTile)).first as AnimeTile;
+
+    verify(
+      () =>
+          firstItem.anime.canonicalTitle !=
+          filteredFirstItem.anime.canonicalTitle,
+    );
   });
 }
