@@ -1,3 +1,4 @@
+import 'package:anime_discovery_app/core/enums/category_filter.dart';
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/domain/entities/anime.dart';
 import 'package:anime_discovery_app/presentation/notifiers/popular_anime_list_notifier.dart';
@@ -85,7 +86,7 @@ class _PopularAnimeListPageState extends ConsumerState<PopularAnimeListPage> {
             slivers: [
               SliverAppBar(
                 floating: true,
-                expandedHeight: 150,
+                expandedHeight: 140,
                 collapsedHeight: 140,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 flexibleSpace: FlexibleSpaceBar(
@@ -143,6 +144,32 @@ class _PopularAnimeListPageState extends ConsumerState<PopularAnimeListPage> {
                 ),
               ),
 
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 40,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: List.generate(
+                      CategoryFilters.values.length,
+                      (index) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: FilterChip(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          label: Text(CategoryFilters.values[index].name),
+                          onSelected: (selected) {
+                            ref
+                                .read(popularAnimeListProvider.notifier)
+                                .filterByCategory(
+                                  CategoryFilters.values[index],
+                                );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(child: SizedBox(height: 20)),
               switch (state) {
                 AsyncLoading() => const SliverFillRemaining(
                   hasScrollBody: false,
