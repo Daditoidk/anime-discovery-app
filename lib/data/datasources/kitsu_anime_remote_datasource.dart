@@ -1,9 +1,13 @@
 import 'package:anime_discovery_app/core/constants/const.dart';
+import 'package:anime_discovery_app/core/enums/category_filter.dart';
 import 'package:anime_discovery_app/data/models/anime_dto.dart';
 import 'package:dio/dio.dart';
 
 abstract class IKitsuAPIRemoteDataSource {
-  Future<List<AnimeDto>> getPopularAnime({int? offset});
+  Future<List<AnimeDto>> getPopularAnime({
+    int? offset,
+    CategoryFilters? categoryFilter,
+  });
   Future<List<AnimeDto>> searchAnime(
     String query, {
     CancelToken? cancelToken,
@@ -27,11 +31,24 @@ class KitsuAPIRemoteDataSourceImpl implements IKitsuAPIRemoteDataSource {
     queryParameters.addAll(paginationParameters);
   }
 
+  void addFiltersParams(
+    CategoryFilters? categoryFilter,
+    Map<String, String> queryParameters,
+  ) {
+    if (categoryFilter == null) return;
+    if (categoryFilter == CategoryFilters.all) return;
+    queryParameters.addAll({'filter[categories]': categoryFilter.name});
+  }
+
   @override
-  Future<List<AnimeDto>> getPopularAnime({int? offset}) async {
+  Future<List<AnimeDto>> getPopularAnime({
+    int? offset,
+    CategoryFilters? categoryFilter,
+  }) async {
     final queryParameters = {'sort': '-user_count'};
     addPaginationParams(offset, queryParameters);
-    
+    addFiltersParams(categoryFilter, queryParameters);
+
     try {
       final response = await dio.get(
         kPopularAnimeEndpoint,

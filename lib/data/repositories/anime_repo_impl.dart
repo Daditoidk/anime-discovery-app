@@ -1,3 +1,4 @@
+import 'package:anime_discovery_app/core/enums/category_filter.dart';
 import 'package:anime_discovery_app/core/extensions/mappers.dart';
 import 'package:anime_discovery_app/core/failures/failure.dart';
 import 'package:anime_discovery_app/data/datasources/kitsu_anime_remote_datasource.dart';
@@ -12,9 +13,9 @@ class AnimeRepositoryImpl implements IAnimeRepository {
   AnimeRepositoryImpl(this.api);
 
   @override
-  Future<Either<Failure, List<Anime>>> getPopularAnime({int? offset}) async {
+  Future<Either<Failure, List<Anime>>> getPopularAnime({int? offset,CategoryFilters? categoryFilter}) async {
     try {
-      final popularAnimeDtos = await api.getPopularAnime(offset: offset);
+      final popularAnimeDtos = await api.getPopularAnime(offset: offset,categoryFilter: categoryFilter);
 
       final popularAnimeEntities = popularAnimeDtos
           .map((dto) => dto.toEntity())
