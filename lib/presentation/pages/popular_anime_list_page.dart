@@ -154,6 +154,9 @@ class _PopularAnimeListPageState extends ConsumerState<PopularAnimeListPage> {
                       (index) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4.0),
                         child: FilterChip(
+                          key: Key(
+                            'FilterChip - ${CategoryFilters.values[index].name}',
+                          ),
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           label: Text(CategoryFilters.values[index].name),
                           onSelected: (selected) {
