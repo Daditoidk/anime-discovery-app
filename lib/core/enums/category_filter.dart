@@ -1,6 +1,7 @@
 
 enum CategoryFilters {
   all,
+  isekai,
   action,
   comedy,
   drama,

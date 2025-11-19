@@ -50,7 +50,7 @@ class AnimeTile extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    '${anime.id} - ${anime.canonicalTitle}}',
+                    '${anime.id} - ${anime.canonicalTitle}',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white),
                   ),
