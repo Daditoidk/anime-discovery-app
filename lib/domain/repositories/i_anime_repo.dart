@@ -5,12 +5,14 @@ import 'package:dio/dio.dart';
 
 abstract class IAnimeRepository {
 
-  Future<Either<Failure, List<Anime>>> getPopularAnime({ int? offset});
+  Future<Either<Failure, List<Anime>>> getPopularAnime({ int? offset, String? categoryFilter});
   Future<Either<Failure, List<Anime>>> searchAnime(
     String query, {
     CancelToken? cancelToken,
     int? offset,
   });
+
+
 
 
 }
